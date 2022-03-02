@@ -15,21 +15,21 @@ Projeto de CPU baseado no processador MIPS
 |:----------------------:|:------:|:--:|:--:|:--:|:-----:|:------:|:--------------------:|
 |     add rd, rs, rt     | 000000 | rs | rt | rd |       | 100000 |     rd ← rs + rt     |
 |     and rd, rs, rt     | 000000 | rs | rt | rd |       | 100100 |     rd ← rs & rt     |
-|     sub rd, rs, rt     | 000000 | rs | rt | rd |       | 100010 |     rd ← rs – rt     |
-|    sll rd, rt, shamt   | 000000 |    | rt | rd | shamt | 000000 |   rd ← rt << shamt   |
-|    srl rd, rt, shamt   | 000000 |    | rt | rd | shamt | 000010 |   rd ← rt >> shamt   |
-|    sra rd, rt, shamt   | 000000 |    | rt | rd | shamt | 000011 |   rd ← rt >> shamt*  |
-|     sllv rd, rs, rt    | 000000 | rs | rt | rd |       | 000100 |     rd ← rs << rt    |
-|     srav rd, rs, rt    | 000000 | rs | rt | rd |       | 000111 |    rd ← rs >> rt*    |
-|     slt rd, rs, rt     | 000000 | rs | rt | rd |       | 101010 | rd ← (rs < rt) ?1 :0 |
-|          jr rs         | 000000 | rs |    |    |       | 001000 |        PC ← rs       |
-|          break         | 000000 |    |    |    |       | 001101 |      PC ← PC - 4     |
-|           Rte          | 000000 |    |    |    |       | 010011 |       PC ← EPC       |
 |       div rs, rt       | 000000 | rs | rt |    |       | 011010 |        rs / rt       |
 |       mult rs, rt      | 000000 | rs | rt |    |       | 011000 |        rs x rt       |
+|          jr rs         | 000000 | rs |    |    |       | 001000 |        PC ← rs       |
 |         mfhi rd        | 000000 |    |    | rd |       | 010000 |        rd ← hi       |
 |         mflo rd        | 000000 |    |    | rd |       | 010010 |        rd ← lo       |
-|       divm rs, rt      | 000000 | rs | rt |    |       | 000101 |   mem[rs] / mem[rt]  |
+|    sll rd, rt, shamt   | 000000 |    | rt | rd | shamt | 000000 |   rd ← rt << shamt   |
+|     sllv rd, rs, rt    | 000000 | rs | rt | rd |       | 000100 |     rd ← rs << rt    |
+|     slt rd, rs, rt     | 000000 | rs | rt | rd |       | 101010 | rd ← (rs < rt) ?1 :0 |
+|    sra rd, rt, shamt   | 000000 |    | rt | rd | shamt | 000011 |   rd ← rt >> shamt*  |
+|     srav rd, rs, rt    | 000000 | rs | rt | rd |       | 000111 |    rd ← rs >> rt*    |
+|    srl rd, rt, shamt   | 000000 |    | rt | rd | shamt | 000010 |   rd ← rt >> shamt   |
+|     sub rd, rs, rt     | 000000 | rs | rt | rd |       | 100010 |     rd ← rs – rt     |
+|          break         | 000000 |    |    |    |       | 001101 |      PC ← PC - 4     |
+|           Rte          | 000000 |    |    |    |       | 010011 |       PC ← EPC       |
+|       addm rs, rt, rd  | 000000 | rs | rt | rd |       | 000101 |                      |
 
 ### Instruções do tipo I
 
@@ -41,7 +41,7 @@ Projeto de CPU baseado no processador MIPS
 |    bne rs,rt, offset   | 000101 | rs | rt |  offset  |       Desvia se rs != rt       |
 |    ble rs,rt,offset    | 000110 | rs | rt |  offset  |       Desvia se rs <= rt       |
 |    bgt rs,rt,offset    | 000111 | rs | rt |  offset  |        Desvia se rs > rt       |
-|   sram rt, offset(rs)  | 000001 | rs | rt |  offset  |  rt ← rt >> Mem[offset + rs]*  |
+|   sllm rt, offset(rs)  | 000001 | rs | rt |  offset  |  rt ← rt >> Mem[offset + rs]*  |
 |    lb rt, offset(rs)   | 100000 | rs | rt |  offset  |   rt ← byte Mem[offset + rs]   |
 |    lh rt, offset(rs)   | 100001 | rs | rt |  offset  | rt ← halfword Mem[offset + rs] |
 |    lui rt, imediato    | 001111 |    | rt | imediato |       rt ← imediato << 16      |
