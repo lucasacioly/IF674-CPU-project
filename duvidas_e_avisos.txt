@@ -1,0 +1,23 @@
+AVISOS
+
+    1 - caso dê algum erro de compilação 
+        verificar se pode ser corrigido
+        com a inclusão dos módulos dentro das pastas.
+        nesse caso no módulo que deu erro, tentar instanciar
+        os módulos que faltam com:
+        `include "path/to/module"
+        antes de instanciar o módulo propriamente dito.
+
+    2 - o nome dos FIOS DE DADOS é dado de acordo com a unidade de
+        SAÍDA e a unidade de CHEGADA:
+        ex: wire saída_chegada
+
+    3 - os multiplexadores devem ser genéricos para permitir instancia-los
+        da forma que desejar-mos.
+    
+    4 - os fios de dados estão instanciados a partir do módulo que originou
+        esses dados.
+    
+DÚVIDAS
+
+    
