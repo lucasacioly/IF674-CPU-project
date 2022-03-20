@@ -157,5 +157,53 @@ wire Div_Mult_Ctrl;
 wire DIV0;
 
 
+//------------------INSTANCIANDO MÓDULOS UTILIZADOS-----------------//
+
+// ULA
+
+// DIV e MULT
+
+// IR 
+
+// MEMORIA
+
+// BANCO DE REGISTRADORES
+
+// REGISTRADOR DE DESLOCAMENTOS
+
+
+// PC
+
+// REG A
+
+// REG B
+
+// ALUout
+
+// EPC
+
+// MDR
+
+
+
+
+// LOAD MASK 
+// STORE MASK
+
+// sign extend 1 to 32
+// sign extend 16 to 32
+// shift left 16
+// shift left 2 branch
+// shift left 2 jump
+
+// mux_EXCP
+// mux_memory, o que leva dados para a memoria
+// mux_PC, o que leva os dados para o PC
+// mux_Shift_Ammount
+// mux_Shift_Reg
+// mux_ulaA
+// mux_ulaB
+// mux_Write_Data
+// mux_Write_Reg
 
 endmodule
