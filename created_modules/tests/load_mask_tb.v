@@ -1,5 +1,7 @@
-`include "../load_mask.v"
-
+//Para compilar este testbench a partir desta pasta esse deve ser o include
+//`include "../load_mask.v"
+//Para compilar a partir da pasta raiz/usando o script compile_testbenches o include a seguir resolve
+`include "./created_modules/load_mask.v"
 `timescale 1ns/1ps
 
 module LoadMask_tb();

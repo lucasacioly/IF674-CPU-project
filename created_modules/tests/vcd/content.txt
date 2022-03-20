@@ -1,0 +1,2 @@
+Nesta pasta estarão armazenados os outputs do vvp quando for feita compilação via scritp
+Sempre que você adicionar um novo testbench, se quiser compilá-lo no script, basta adicionar uma chamada ao subprocess.call, colocar os paths certinho, e se certificar de que o dumpfile lá no código do testbench está devidamente colocado de acordo com o caminho em relação à pasta raiz do projeto
