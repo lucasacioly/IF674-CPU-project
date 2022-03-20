@@ -20,59 +20,95 @@ parameter NUM_255 = 32'd255; //para os exceção
 //obs -> esses fios estão mapeados de acordo com o módulo do qual saem!
 
 // ULA
+wire [31:0] ula_result;
 
 // REGISTRADOR DE DESLOCAMENTOS
+wire [31:0] shift_out;
 
 // DIV e MULT
-
+wire [31:0] div_mult_hi;
+wire [31:0] div_mult_lo;
 
 
 // BANCO DE REGISTRADORES
+wire [31:0] read_data_1;
+wire [31:0] read_data_2;
+
 // MEMORIA
+wire [31:0] mem_out;
 
 
+// P
+wire [31:0] PC_out;
 
-// PC
 // IR
+wire [5:0] OP_CODE;
+wire [4:0] RS;
+wire [4:0] RT;
+wire [15:0] OFSET;
+
 // MDR
+wire [31:0] MDR_out;
+
 // ALUout
+wire [31:0] ALUout_out;
+
 // EPC
+wire [31:0] EPC_out;
+
 // HI
+wire [31:0] HI_out;
+
 // LO
+wire [31:0] LO_out;
 
 
 
 // LOAD MASK
-// STORE MASK
+wire [31:0] load_mask_out;
 
+// STORE MASK
+wire [31:0] store_mask_out;
+
+
+// sign extend 1 to 32
+wire [31:0] 1to32_out;
+// sign extend 16 to 32
+wire [31:0] 16to32_out;
+// shift left 16
+wire [31:0] shift16_out;
+// shift left 2 branch
+wire [31:0] shift2_branch_out;
+// shift left 2 jump
+wire [27:0] shift2_jump_out;
 
 
 // mux_EXCP
-wire mux_EXCP_out;
+wire [31:0] mux_EXCP_out;
 
-// mux_memory
-wire mux_memory_out;
+// mux_memory, o que leva dados para a memoria
+wire [31:0] mux_memory_out;
 
-// mux_PC
-wire mux_PC_out;
+// mux_PC, o que leva os dados para o PC
+wire [31:0] mux_PC_out;
 
 // mux_Shift_Ammount
-wire mux_Shift_Ammount_out;
+wire [4:0] mux_Shift_Ammount_out;
 
 // mux_Shift_Reg
-wire mux_Shift_Reg_out;
+wire [31:0] mux_Shift_Reg_out;
 
 // mux_ulaA
-wire mux_ulaA_out;
+wire [31:0] mux_ulaA_out;
 
 // mux_ulaB
-wire mux_ulaB_out;
+wire [31:0] mux_ulaB_out;
 
 // mux_Write_Data
-wire mux_Write_Data_out;
+wire [31:0] mux_Write_Data_out;
 
 // mux_Write_Reg
-wire mux_Write_Reg_out;
+wire [4:0] mux_Write_Reg_out;
 
 
 //-----------------------sinais de controle-------------------------//
@@ -89,27 +125,27 @@ wire EPCcontrol;
 wire ALUoutCtrl;
 
 // multiplexadores
-wire EXCPcontrol;
-wire IorD;
+wire [1:0] EXCPcontrol;
+wire [2:0] IorD;
 wire ShiftRegCtrl;
-wire ShiftAmmCtrl;
-wire RegDst;
-wire MemToReg;
-wire ALUsrcA;
-wire ALUsrcB;
-wire PCsrc;
+wire [1:0] ShiftAmmCtrl;
+wire [1:0] RegDst;
+wire [2:0] MemToReg;
+wire [1:0] ALUsrcA;
+wire [2:0] ALUsrcB;
+wire [2:0] PCsrc;
 
 // Mascaras de Store e Load
-wire SMcontrol;
-wire LMcontrol;
+wire [1:0] SMcontrol;
+wire [1:0] LMcontrol;
 
 // armazenamentos e deslocamentos
 wire MEMwrite;      // MEMÓRIA
-wire Shift;         // registrador de deslocamento
+wire [2:0] Shift;         // registrador de deslocamento
 wire RegWrite;       // banco de registradores
 
 // ULA
-wire ALUop;
+wire [3:0] ALUop;
 wire O;         // OVERFLOW
 wire Z;         // ZERO on operation
 wire GT;        // Greater than
