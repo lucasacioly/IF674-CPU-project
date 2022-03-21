@@ -153,10 +153,11 @@ wire RegWrite;       // banco de registradores
 // ULA
 wire [3:0] ALUop;
 wire O;         // OVERFLOW
-wire Z;         // ZERO on operation
+wire ZERO;         // ZERO on operation
 wire GT;        // Greater than
 wire LT;        // Less than
 wire EG;        // Equal to
+wire N          // negative
 
 // DIV e MULT
 wire Div_Mult_Ctrl;
@@ -166,16 +167,67 @@ wire DIV0;
 //------------------INSTANCIANDO MÓDULOS UTILIZADOS-----------------//
 
 // ULA
+ula32 ULA(
+    .A(mux_ulaA_out), 			
+	.B(mux_ulaB_out), 			
+	.Seletor(ALUop), 	
+	.S(ula_result), 			  
+	.Overflow(O), 	
+	.Negativo(N),	
+	.z(ZERO),			
+	.Igual(EG),		
+	.Maior(GT),		
+	.Menor(LT)
+);
 
 // DIV e MULT
 
 // IR 
+Instr_reg IR(
+    .Clk(clk),			
+	.Reset(reset),		
+	.Load_ir(IrWrite),		
+	.Entrada(mem_out),		
+	.Instr31_26(OP_CODE),	
+	.Instr25_21(RS),	
+	.Instr20_16(RT),	
+	.Instr15_0(OFSET)
+);
 
 // MEMORIA
+Memoria memory(
+    .Address(mux_memory_out),	
+	.Clock(clk),
+	.Wr(MEMwrite),	
+	.Datain(store_mask_out),	
+	.Dataout(mem_out)
+);
 
 // BANCO DE REGISTRADORES
+Banco_reg banco_reg (
+    .Clk(clk),
+    .Reset(reset),
+    .RegWrite(RegWrite),
+    .ReadReg1(RS),
+    .ReadReg2(RT),
+        
+    .WriteReg(mux_Write_Reg_out),
+    .WriteData(mux_Write_Data_out),
+        
+    .ReadData1(read_data_1),
+    .ReadData2(read_data_2)
+);
+
 
 // REGISTRADOR DE DESLOCAMENTOS
+RegDesloc shift_reg(
+    .Clk(clk),		
+	.Reset(reset),	
+	.Shift(Shift),	 
+	.N(mux_Shift_Ammount_out),		
+	.Entrada(mux_Shift_Reg_out), 
+	.Saida(shift_out)
+);
 
 
 // PC
@@ -184,7 +236,7 @@ Registrador PC(
 	reset,	
 	PCwrite,
 	mux_PC_out, 
-	PC_out,
+	PC_out
 );
 
 // REG A
@@ -193,7 +245,7 @@ Registrador A(
 	reset,	
 	Awrite,	
 	read_data_1,
-	A_out,
+	A_out
 );
 
 // REG B
@@ -202,7 +254,7 @@ Registrador B(
 	reset,	
 	Bwrite,	
 	read_data_2,
-	B_out,
+	B_out
 );
 
 // ALUout
@@ -211,7 +263,7 @@ Registrador PC(
 	reset,	
 	ALUoutCtrl,	
 	ula_result,
-	ALUout_out,
+	ALUout_out
 );
 
 // EPC
@@ -220,7 +272,7 @@ Registrador PC(
 	reset,	
 	EPCcontrol,	
 	ula_result,
-	EPC_out,
+	EPC_out
 );
 
 // MDR
@@ -229,7 +281,7 @@ Registrador PC(
 	reset,	
 	MDRwrite,	
 	mem_out,
-	MDR_out,
+	MDR_out
 );
 
 // HI
@@ -238,7 +290,7 @@ Registrador PC(
 	reset,	
 	write,	
 	div_mult_hi,
-	HI_out,
+	HI_out
 );
 
 // LO
@@ -247,7 +299,7 @@ Registrador PC(
 	reset,	
 	write,	
 	div_mult_lo,
-	LO_out,
+	LO_out
 );
 
 
