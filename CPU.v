@@ -305,8 +305,19 @@ Registrador PC(
 
 
 
-// LOAD MASK 
+// LOAD MASK
+load_mask LOAD_MASK(
+    .MR(MDR_out),
+    .CT(LMcontrol),
+    .OUT(load_mask_out)
+);
 // STORE MASK
+store_mask STORE_MASK(
+    .B(B_out),
+    .MR(MDR_out),
+    .CT(SMcontrol),
+    .OUT(store_mask_out)
+);
 
 // sign extend 1 to 32
 // sign extend 16 to 32
