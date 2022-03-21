@@ -3,6 +3,6 @@ module shift_left_2(
     output wire [31:0] data_out
 );
 
-    assign data_out = data_in << 2;
+assign data_out = data_in << 2;
 
 endmodule

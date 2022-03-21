@@ -3,6 +3,6 @@ module shift_left_16_lui(
     output wire [31:0] data_out
 );
 
-    assign data_out = {data_in, {16{1'b0}}};
+assign data_out = {data_in, {16{1'b0}}};
 
 endmodule

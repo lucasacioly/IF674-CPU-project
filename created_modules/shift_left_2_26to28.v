@@ -3,6 +3,6 @@ module shift_left_2_26to28(
     output wire [27:0] data_out
 );
 
-    assign data_out = {data_in, {2{1'b0}}};
+assign data_out = {data_in, {2{1'b0}}};
 
 endmodule

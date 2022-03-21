@@ -38,7 +38,7 @@ wire [31:0] read_data_2;
 wire [31:0] mem_out;
 
 
-// P
+// PC
 wire [31:0] PC_out;
 
 // IR
@@ -61,6 +61,12 @@ wire [31:0] HI_out;
 
 // LO
 wire [31:0] LO_out;
+
+//A
+wire [31:0] A_out;
+
+//B
+wire [31:0] B_out;
 
 
 
@@ -173,16 +179,76 @@ wire DIV0;
 
 
 // PC
+Registrador PC(
+    clk,		
+	reset,	
+	PCwrite,
+	mux_PC_out, 
+	PC_out,
+);
 
 // REG A
+Registrador A(
+    clk,		
+	reset,	
+	Awrite,	
+	read_data_1,
+	A_out,
+);
 
 // REG B
+Registrador B(
+    clk,		
+	reset,	
+	Bwrite,	
+	read_data_2,
+	B_out,
+);
 
 // ALUout
+Registrador PC(
+    clk,		
+	reset,	
+	ALUoutCtrl,	
+	ula_result,
+	ALUout_out,
+);
 
 // EPC
+Registrador PC(
+    clk,		
+	reset,	
+	EPCcontrol,	
+	ula_result,
+	EPC_out,
+);
 
 // MDR
+Registrador PC(
+    clk,		
+	reset,	
+	MDRwrite,	
+	mem_out,
+	MDR_out,
+);
+
+// HI
+Registrador PC(
+    clk,		
+	reset,	
+	write,	
+	div_mult_hi,
+	HI_out,
+);
+
+// LO
+Registrador PC(
+    clk,		
+	reset,	
+	write,	
+	div_mult_lo,
+	LO_out,
+);
 
 
 
