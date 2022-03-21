@@ -4,7 +4,7 @@ module CPU(
     input wire reset
 );
 
-// parâmetros especiais
+//-------------------------parâmetros especiais------------------------//
 parameter REG_31 = 5'd31;
 parameter REG_29 = 5'd29;
 parameter NUM_4 = 32'd4;     // para somas e subtrações na ULA    
