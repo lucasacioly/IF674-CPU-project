@@ -4,7 +4,7 @@ module CPU(
     input wire reset
 );
 
-//-------------------------parâmetros especiais------------------------//
+//-----------------------------------parâmetros especiais-------------------------------------//
 parameter REG_31 = 5'd31;
 parameter REG_29 = 5'd29;
 parameter NUM_4 = 32'd4;     // para somas e subtrações na ULA    
@@ -13,9 +13,9 @@ parameter NUM_253 = 32'd253; //para os exceção
 parameter NUM_254 = 32'd254; //para os exceção
 parameter NUM_255 = 32'd255; //para os exceção
 
-//----------------------INSTANCIAR FIOS DA CPU------------------------//
+//---------------------------------INSTANCIAR FIOS DA CPU-----------------------------------//
 
-//--------------------------fios de dados----------------------------// 
+//--------------------------------------fios de dados--------------------------------------// 
 
 //obs -> esses fios estão mapeados de acordo com o módulo do qual saem!
 
@@ -116,8 +116,17 @@ wire [31:0] mux_Write_Data_out;
 // mux_Write_Reg
 wire [4:0] mux_Write_Reg_out;
 
+// fios de dados obtidos por concatenação de outros fios 
+wire input_to_shift_jump;
+assign input_to_shift_jump = {RS, {RT, OFSET}};
 
-//-----------------------sinais de controle-------------------------//
+wire input_jump_adres;
+assign input_jump_adres = {PC[31:28], shift2_jump_out};
+
+
+
+
+//----------------------------------sinais de controle-----------------------------------//
 
 // registradores
 
@@ -164,7 +173,7 @@ wire Div_Mult_Ctrl;
 wire DIV0;
 
 
-//------------------INSTANCIANDO MÓDULOS UTILIZADOS-----------------//
+//----------------------------INSTANCIANDO MÓDULOS UTILIZADOS----------------------------//
 
 // ULA
 ula32 ULA(
@@ -319,20 +328,129 @@ store_mask STORE_MASK(
     .OUT(store_mask_out)
 );
 
+
+
 // sign extend 1 to 32
+sign_extend_1to32 sign_extend_1to32(
+	.data_in(LT),
+    .data_out(1to32_out)
+);
 // sign extend 16 to 32
+sign_extend_16to32 sign_extend_16to32(
+	.data_in(OFSET),
+    .data_out(16to32_out)
+);
 // shift left 16
+shift_left_16_lui shift_left_16_lui(
+	.data_in(OFSET),
+    .data_out(shift16_out)
+);
 // shift left 2 branch
+shift_left_2 shift_left_2_branch(
+	.data_in(16to32_out),
+    .data_out(shift2_branch_out)
+);
+
 // shift left 2 jump
+shift_left_2_26to28 shift_left_2_jump(
+	.data_in(input_to_shift_jump),
+    .data_out(shift2_jump_out)
+);
+
+
 
 // mux_EXCP
+mux_3x1 mux_EXCP(
+	.Data_0(NUM_253),
+    .Data_1(NUM_254),
+    .Data_2(NUM_255),
+
+    .Selector(EXCPcontrol),
+    .Data_out(mux_EXCP_out)
+);
 // mux_memory, o que leva dados para a memoria
+mux_6x1 mux_memory(
+	.Data_0(PC_out),
+    .Data_1(ula_result),
+    .Data_2(B_out),
+    .Data_3(A_out),
+    .Data_4(ALUout_out),
+	.Data_5(mux_EXCP_out),
+
+    .Selector(IorD),
+    .Data_out(mux_memory_out)
+);
 // mux_PC, o que leva os dados para o PC
+mux_5x1 mux_PC(
+	.Data_0(input_jump_adres),
+    .Data_1(load_mask_out),
+    .Data_2(ula_result),
+    .Data_3(EPC_out),
+    .Data_4(ALUout_out),
+
+    .Selector(PCsrc),
+    .Data_out(mux_PC_out)
+);
 // mux_Shift_Ammount
+mux_3x1_5 mux_Shift_Ammount(
+	.Data_0(B_out[4:0]),
+    .Data_1(MDR_out[4:0]),
+    .Data_2(OFSET[10:6]),
+
+    .Selector(ShiftAmmCtrl),
+    .Data_out(mux_Shift_Ammount_out)
+);
 // mux_Shift_Reg
+mux_2x1 mux_Shift_Reg(
+	.Data_0(A_out),
+    .Data_1(B_out),
+
+    .Selector(ShiftRegCtrl),
+    .Data_out(mux_Shift_Reg_out)
+);
 // mux_ulaA
+mux_3x1 mux_ulaA(
+	.Data_0(PC_out),
+    .Data_1(mem_out),
+    .Data_2(A_out),
+
+    .Selector(ALUsrcA),
+    .Data_out(mux_ulaA_out)
+);
 // mux_ulaB
+mux_5x1 mux_ulaB(
+	.Data_0(B_out),
+    .Data_1(NUM_4),
+    .Data_2(MDR_out),
+    .Data_3(16to32_out),
+    .Data_4(shift2_branch_out),
+
+    .Selector(ALUsrcB),
+    .Data_out(mux_ulaB_out)
+);
 // mux_Write_Data
+mux_8x1 mux_Write_Data(
+	.Data_0(load_mask_out),
+    .Data_1(LO_out),
+    .Data_2(HI_out),
+    .Data_3(shift16_out),
+    .Data_4(NUM_227),
+    .Data_5(shift_out),
+    .Data_6(ALUout_out),
+    .Data_7(LT),
+
+    .Selector(MemToReg),
+    .Data_out(mux_Write_Data_out)
+);
 // mux_Write_Reg
+mux_4x1_5 mux_Write_Reg(
+	.Data_0(RT),
+    .Data_1(OFSET[15:11]),
+    .Data_2(REG_31),
+    .Data_3(REG_29),
+
+    .Selector(RegDst),
+    .Data_out(mux_Write_Reg_out)
+);
 
 endmodule
