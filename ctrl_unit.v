@@ -1,4 +1,4 @@
-module ctrl_unity(
+module control_unit(
     input wire clk,
     input wire reset_in,
 
@@ -8,63 +8,92 @@ module ctrl_unity(
 
 // flags
 
-    input wire O;         // OVERFLOW
-    input wire ZERO;      // ZERO on operation
-    input wire GT;        // Greater than
-    input wire LT;        // Less than
-    input wire EG;        // Equal to
-    input wire N          // negative
+    input wire O,         // OVERFLOW
+    input wire ZERO,      // ZERO on operation
+    input wire GT,        // Greater than
+    input wire LT,        // Less than
+    input wire EG,        // Equal to
+    input wire N,         // negative
+    input wire DIV0,      // DIV0 exception signal
 
 // outputs
 
 // ULA
-output reg [2:0] ALUop;
+    output wire [2:0] ALUop,
 
 // DIV e MULT
-output reg Div_Mult_Ctrl;
-output reg DIV0;
+    output wire Div_Mult_Ctrl,
 
 // armazenamentos e deslocamentos
-output reg MEMwrite;             // MEMÓRIA
-output reg [2:0] Shift;         // registrador de deslocamento
-output reg RegWrite;              // banco de registradores
+    output wire MEMwrite,             // MEMÓRIA
+    output wire [2:0] Shift,         // registrador de deslocamento
+    output wire RegWrite,              // banco de registradores
 
 // Mascaras de Store e Load
-output reg [1:0] SMcontrol;
-output reg [1:0] LMcontrol;
+    output wire [1:0] SMcontrol,
+    output wire [1:0] LMcontrol,
 
 // multiplexadores
-output reg [1:0] EXCPcontrol;
-output reg [2:0] IorD;
-output reg ShiftRegCtrl;
-output reg [1:0] ShiftAmmCtrl;
-output reg [1:0] RegDst;
-output reg [2:0] MemToReg;
-output reg [1:0] ALUsrcA;
-output reg [2:0] ALUsrcB;
-output reg [2:0] PCsrc;
+    output wire [1:0] EXCPcontrol,
+    output wire [2:0] IorD,
+    output wire ShiftRegCtrl,
+    output wire [1:0] ShiftAmmCtrl,
+    output wire [1:0] RegDst,
+    output wire [2:0] MemToReg,
+    output wire [1:0] ALUsrcA,
+    output wire [2:0] ALUsrcB,
+    output wire [2:0] PCsrc,
 
 
 // registradores
 
-output reg PCwrite;
-output reg IrWrite;
-output reg MDRwrite;
-output reg write;     // sinal para escrever em HI e LO
-output reg Awrite;
-output reg Bwrite;
-output reg EPCcontrol;
-output reg ALUoutCtrl;
+    output wire PCwrite,
+    output wire IrWrite,
+    output wire MDRwrite,
+    output wire write,     // sinal para escrever em HI e LO
+    output wire Awrite,
+    output wire Bwrite,
+    output wire EPCcontrol,
+    output wire ALUoutCtrl,
 
 // reset 
-output reg reset_out;
-
+    output wire reset_out
 );
 
 
     reg [6:0] STATE;
     reg [5:0] COUNTER;
-    reg [42:0] OUTPUT_TABLE [0:6];
+    reg [42:0] STATE_OUTPUT_TABLE [0:6];
+    wire [42:0] OUTPUT_WORD;
+
+    assign ALUop = OUTPUT_WORD[42:40];
+    assign Div_Mult_Ctrl = OUTPUT_WORD[39];
+    assign MEMwrite = OUTPUT_WORD[38];
+    assign Shift = OUTPUT_WORD[37:35];
+    assign RegWrite = OUTPUT_WORD[34];
+    assign SMcontrol = OUTPUT_WORD[33:32];
+    assign LMcontrol = OUTPUT_WORD[31:30];
+    assign EXCPcontrol = OUTPUT_WORD[29:28];
+    assign IorD = OUTPUT_WORD[27:25];
+    assign ShiftRegCtrl = OUTPUT_WORD[24];
+    assign ShiftAmmCtrl = OUTPUT_WORD[23:22];
+    assign RegDst = OUTPUT_WORD[21:20];
+    assign MemToReg = OUTPUT_WORD[19:17];
+    assign ALUsrcA = OUTPUT_WORD[16:15];
+    assign ALUsrcB = OUTPUT_WORD[14:12];
+    assign PCsrc = OUTPUT_WORD[11:9];
+    assign PCwrite = OUTPUT_WORD[8];
+    assign IrWrite = OUTPUT_WORD[7];
+    assign MDRwrite = OUTPUT_WORD[6];
+    assign write = OUTPUT_WORD[5];
+    assign Awrite = OUTPUT_WORD[4];
+    assign Bwrite = OUTPUT_WORD[3];
+    assign EPCcontrol = OUTPUT_WORD[2];
+    assign ALUoutCtrl = OUTPUT_WORD[1];
+    assign reset_out = OUTPUT_WORD[0];
+
+    //assign OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE];
+
 //-------------------------------PARAMETROS DE ESTADO------------------------------//
 
     // ESTADOS
@@ -118,10 +147,29 @@ output reg reset_out;
 //-------------------------------------INICIALIZAÇÃO-------------------------//
 
 initial begin
-    // reset inicial    
-    reset_out = 1'b1;  
-end
+    
+    
+//     //----------------------  INICIALIZAÇÃO DA TABELA DE OUTPUTS  ---------------------//
 
+    
+//     ///////////////   RESET   /////////////
+//     // RegWrite =1          /34
+//     // RegDst = 3           /21:20
+//     // MemToReg = 4         /19:17
+//     // reset_out = 1        /0
+//     STATE_OUTPUT_TABLE[STATE_RESET] = 43'd0;
+
+//     STATE_OUTPUT_TABLE[STATE_RESET][34] = 1;        // RegWrite =1          /34
+//     STATE_OUTPUT_TABLE[STATE_RESET][21:20] = 2'd3;   // RegDst = 3           /21:20
+//     STATE_OUTPUT_TABLE[STATE_RESET][19:17] = 3'd4;   // MemToReg = 4         /19:17
+//     STATE_OUTPUT_TABLE[STATE_RESET][0] = 1;         // reset_out = 1        /0
+//     ///////////////   RESET   /////////////
+
+
+//     //------------------  FIM DA INICIALIZAÇÃO DA TABELA DE OUTPUTS  ------------------//
+
+    STATE = STATE_RESET;
+end
 
 always @(posedge clk) begin
     if (reset_in == 1'b1) begin
