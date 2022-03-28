@@ -96,10 +96,22 @@ module control_unit(
 
 //-------------------------------PARAMETROS DE ESTADO------------------------------//
 
-    // ESTADOS
-    parameter STATE_RESET        =   7'd0;
-    parameter STATE_FETCH0       =   7'd1;
-    parameter STATE_FETCH1       =   7'd2;
+    //-----------------------------ESTADOS----------------------------//
+    //  COMUNS
+    parameter STATE_RESET               =   7'd0;
+    parameter STATE_FETCH0              =   7'd1;
+    parameter STATE_FETCH1              =   7'd2;
+    parameter STATE_DECODE0             =   7'd3;
+    parameter STATE_DECODE1             =   7'd4;
+    //  ADD
+    parameter STATE_ADD0                =   7'd5;
+    parameter STATE_ADD1                =   7'd6;
+
+    //  ADD, AND, SUB ENDING STATE
+    parameter STATE_ADD_AND_SUB_ENDING  =   7'd7;
+    
+
+    //---------------------------FIM ESTADOS--------------------------//
 
 
     // OPCODES E FUNÇÕES
@@ -175,11 +187,40 @@ always @(posedge clk) begin
     if (reset_in == 1'b1) begin
         if (STATE != STATE_RESET) begin
             STATE = STATE_RESET;
-
-            //SET ALL SIGNALS
-            
         end
+    end else begin
+        case (STATE)
+            //------        ESTADOS "COMUNS"      --------//
+            STATE_RESET:
+                STATE = STATE_FETCH0; 
+            STATE_FETCH0:
+                STATE = STATE_FETCH1;
+            STATE_FETCH1:
+                STATE = STATE_DECODE0;
+            STATE_DECODE0:
+                STATE = STATE_DECODE1;
+            STATE_DECODE1:
+                if (OPCODE == 0 && FUNCT == ADD) begin
+                    STATE = STATE_ADD0;
+                end else
+                    STATE = STATE_FETCH0;
+            //------     FIM ESTADOS "COMUNS"     --------//
+
+            //  ADD
+            STATE_ADD0:
+                STATE = STATE_ADD1;
+            STATE_ADD1:
+                STATE = STATE_ADD_AND_SUB_ENDING;
+
+            //  ADD, AND, SUB ENDING STATE
+            STATE_ADD_AND_SUB_ENDING:
+                STATE = STATE_FETCH0;
+
+            default: 
+                STATE = STATE_RESET;
+        endcase
     end
+
 end
 
 endmodule
