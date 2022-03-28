@@ -60,16 +60,17 @@ module control_unit(
     output wire reset_out
 );
 
+//-----------------------------------CONTADORES E TABELAS-------------------------------------//
+    reg [6:0] STATE;    
+    reg [5:0] COUNTER; // contador de clocks
+    reg [42:0] STATE_OUTPUT_TABLE [0:7];
+    wire [42:0] OUTPUT_WORD; 
 
-    reg [6:0] STATE;
-    reg [5:0] COUNTER;
-    reg [42:0] STATE_OUTPUT_TABLE [0:6];
-    wire [42:0] OUTPUT_WORD;
 
     assign ALUop = OUTPUT_WORD[42:40];
     assign Div_Mult_Ctrl = OUTPUT_WORD[39];
     assign MEMwrite = OUTPUT_WORD[38];
-    assign Shift = OUTPUT_WORD[37:35];
+    assign Shift = OUTPUT_WORD[37:35];file
     assign RegWrite = OUTPUT_WORD[34];
     assign SMcontrol = OUTPUT_WORD[33:32];
     assign LMcontrol = OUTPUT_WORD[31:30];
@@ -94,7 +95,7 @@ module control_unit(
 
     //assign OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE];
 
-//-------------------------------PARAMETROS DE ESTADO------------------------------//
+//--------------------------------------PARAMETROS DE ESTADO--------------------------------------//
 
     //-----------------------------ESTADOS----------------------------//
     //  COMUNS
@@ -163,6 +164,8 @@ initial begin
     
 //     //----------------------  INICIALIZAÇÃO DA TABELA DE OUTPUTS  ---------------------//
 
+//     //////////////  INICIO  ////////////////
+        
     
 //     ///////////////   RESET   /////////////
 //     // RegWrite =1          /34
@@ -170,51 +173,204 @@ initial begin
 //     // MemToReg = 4         /19:17
 //     // reset_out = 1        /0
 //     STATE_OUTPUT_TABLE[STATE_RESET] = 43'd0;
-
+//
 //     STATE_OUTPUT_TABLE[STATE_RESET][34] = 1;        // RegWrite =1          /34
 //     STATE_OUTPUT_TABLE[STATE_RESET][21:20] = 2'd3;   // RegDst = 3           /21:20
 //     STATE_OUTPUT_TABLE[STATE_RESET][19:17] = 3'd4;   // MemToReg = 4         /19:17
 //     STATE_OUTPUT_TABLE[STATE_RESET][0] = 1;         // reset_out = 1        /0
 //     ///////////////   RESET   /////////////
 
+//      ///////////////  STATE_FETCH0   ///////////
+//      // PCwrite = 0
+//      // iorD = 0
+//      // MEMwrite = 0
+//      // IrWrite = 0
+//      // ALUSrcA = 0         /16:15
+//      // ALUSrcB = 1         /14:12   
+//      // ALUop = 1           /42:40    
+//      // PCSrc = 2           /11:9 
+//      STATE_OUTPUT_TABLE[STATE_FETCH0] = 43'd0;
+//
+//      STATE_OUTPUT_TABLE[STATE_FETCH0][14:12] = 3'd1;
+//      STATE_OUTPUT_TABLE[STATE_FETCH0][42:40] = 3'd1;
+//      STATE_OUTPUT_TABLE[STATE_FETCH0][11:9] = 3'd2;
+//      ///////////////  STATE_FETCH0   ///////////
 
+//      ///////////////  STATE_FETCH1     ///////////////////
+//      // PCwrite = 1      /8
+//      // iorD = 0
+//      // MEMwrite = 0
+//      // IrWrite = 1      /7
+//      // ALUSrcA = 0 
+//      // ALUSrcB = 1      /14:12
+//      // ALUop = 1        /42:40
+//      // PCSrc = 2        /11:9
+//      STATE_OUTPUT_TABLE[STATE_FETCH1] = 43'd0;
+//     
+//      STATE_OUTPUT_TABLE[STATE_FETCH1][8] = 1;
+//      STATE_OUTPUT_TABLE[STATE_FETCH1][7] = 1;
+//      STATE_OUTPUT_TABLE[STATE_FETCH1][14:12] = 3'd1;
+//      STATE_OUTPUT_TABLE[STATE_FETCH1][42:40] = 3'd1;
+//      STATE_OUTPUT_TABLE[STATE_FETCH1][11:9] = 3'd2;
+//      ///////////////  STATE_FETCH1     ///////////////////
+
+//      ///////////////  STATE_DECODE0     //////////////////////////
+//      // ALUSrcA = 0 
+//      // ALUSrcB = 3      /14:12
+//      // ALUop = 1        /42:40
+//      STATE_OUTPUT_TABLE[STATE_DECODE0] = 43'd0;
+//      
+//      STATE_OUTPUT_TABLE[STATE_DECODE0][14:12] = 3'd3;
+//      STATE_OUTPUT_TABLE[STATE_DECODE0][42:40] = 3'd1; 
+//      ///////////////  STATE_DECODE0     //////////////////////////
+     
+//      ///////////////  STATE_DECODE1   /////////////////////////////
+//      // ALUSrcA = 0 
+//      // ALUSrcB = 3      /14:12
+//      // ALUop = 1        /42:40
+//      // Awrite = 1       /4
+//      // Bwrite = 1       /3
+//      // ALUoutCtrl = 1   /1
+//      STATE_OUTPUT_TABLE[STATE_DECODE1] = 43'd0;
+//      
+//      STATE_OUTPUT_TABLE[STATE_DECODE1][14:12] = 3'd3;
+//      STATE_OUTPUT_TABLE[STATE_DECODE1][42:40] = 3'd1;
+//      STATE_OUTPUT_TABLE[STATE_DECODE1][4] = 1;
+//      STATE_OUTPUT_TABLE[STATE_DECODE1][3] = 1;
+//      STATE_OUTPUT_TABLE[STATE_DECODE1][1] = 1;
+//      ///////////////  STATE_DECODE1   /////////////////////////////
+    
+//      ///////////////  STATE_ADD0   /////////////////////
+//      // ALUSrcA = 2      /16:15
+//      // ALUSrcB = 0      /14:12
+//      // ALUop = 1        /42:40
+//      STATE_OUTPUT_TABLE[STATE_ADD0] = 43'd0;
+//      
+//      STATE_OUTPUT_TABLE[STATE_ADD0][16:15] = 2'd2;
+//      STATE_OUTPUT_TABLE[STATE_ADD0][42:40] = 3'd1;
+//      ///////////////  STATE_ADD0   /////////////////////
+
+//      ///////////////  STATE_ADD1   ////////////////////
+//      // ALUSrcA = 2      /16:15
+//      // ALUSrcB = 0      /14:12
+//      // ALUop = 1        /42:40
+//      // ALUoutCtrl = 1   /1
+//      STATE_OUTPUT_TABLE[STATE_ADD1] = 43'd0;
+//      
+//      STATE_OUTPUT_TABLE[STATE_ADD0][16:15] = 2'd2;
+//      STATE_OUTPUT_TABLE[STATE_ADD0][42:40] = 3'd1;
+//      STATE_OUTPUT_TABLE[STATE_ADD0][1] = 1;
+//      ///////////////  STATE_ADD1   ////////////////////
+    
+//      ///////////////  STATE_ADD_AND_SUB_ENDING  ////////////////
+
+//      ///////////////  STATE_ADD_AND_SUB_ENDING  ////////////////
+//      // RegDst = 1       /21:20   
+//      // MemToReg = 6     /19:17
+//      // RegWrite = 1     /34
+//      STATE_OUTPUT_TABLE[STATE_ADD_AND_SUB_ENDING] = 43'd0;
+//       
+//      STATE_OUTPUT_TABLE[STATE_ADD_AND_SUB_ENDING][21:20] = 2'd1;
+//      STATE_OUTPUT_TABLE[STATE_ADD_AND_SUB_ENDING][19:17] = 3'd6;
+//      STATE_OUTPUT_TABLE[STATE_ADD_AND_SUB_ENDING][34] = 1;
 //     //------------------  FIM DA INICIALIZAÇÃO DA TABELA DE OUTPUTS  ------------------//
 
     STATE = STATE_RESET;
+    COUNTER = 0;
 end
 
 always @(posedge clk) begin
     if (reset_in == 1'b1) begin
         if (STATE != STATE_RESET) begin
             STATE = STATE_RESET;
+            // set signals
+            // SET COUNTER FOR NEXT OPERATION
+            COUNTER = 0;
         end
-    end else begin
+        
+        else begin
+            STATE = STATE_FETCH0;
+            // set signals
+            // SET COUNTER FOR NEXT OPERATION
+            COUNTER = 0;
+        end
+    end 
+
+    else begin
         case (STATE)
             //------        ESTADOS "COMUNS"      --------//
-            STATE_RESET:
-                STATE = STATE_FETCH0; 
-            STATE_FETCH0:
-                STATE = STATE_FETCH1;
-            STATE_FETCH1:
-                STATE = STATE_DECODE0;
-            STATE_DECODE0:
-                STATE = STATE_DECODE1;
-            STATE_DECODE1:
-                if (OPCODE == 0 && FUNCT == ADD) begin
-                    STATE = STATE_ADD0;
-                end else
+            //STATE_RESET:
+            //    STATE = STATE_FETCH0;  //////desnecessário
+
+            STATE_FETCH0: begin
+                if (COUNTER == 0 || COUNTER == 1) begin
                     STATE = STATE_FETCH0;
+                    // set signals
+                    // SET COUNTER FOR NEXT OPERATION
+                    COUNTER = COUNTER + 1; 
+                end
+                else if (COUNTER == 2) begin
+                    STATE = STATE_FETCH1;
+                    // set signals
+                    // SET COUNTER FOR NEXT OPERATION
+                    COUNTER = 0;
+                end
+            end
+
+            STATE_FETCH1: begin
+                STATE = STATE_DECODE0;
+                // set signals
+                // SET COUNTER FOR NEXT OPERATION
+                COUNTER = 0;
+            end
+
+            STATE_DECODE0: begin
+                STATE = STATE_DECODE1;
+                // set signals
+                // SET COUNTER FOR NEXT OPERATION
+                COUNTER = 0;
+            end
+            
+            STATE_DECODE1: begin
+                if (COUNTER == 0 || COUNTER == 1) begin
+                    STATE = STATE_DECODE1;
+                    // set signals
+                    // SET COUNTER FOR NEXT OPERATION
+                    COUNTER = COUNTER + 1;
+                end
+                else if (COUNTER == 2) begin
+                    // modificar para um case para trtar todos os opcodes e functs
+                    if (OPCODE == 0 && FUNCT == ADD) begin
+                        STATE = STATE_ADD0;
+                        // SET COUNTER FOR NEXT OPERATION
+                        // set signals
+                        COUNTER = 0;
+                    end 
+                    else begin
+                        STATE = STATE_FETCH0; // esse será dps o default para tratamento de exceções
+                        // set signals
+                        // SET COUNTER FOR NEXT OPERATION
+                        COUNTER = 0; 
+                    end
+                end
+            end
             //------     FIM ESTADOS "COMUNS"     --------//
 
             //  ADD
-            STATE_ADD0:
+            STATE_ADD0: begin
                 STATE = STATE_ADD1;
-            STATE_ADD1:
+                // set signals
+            end
+            STATE_ADD1: begin
                 STATE = STATE_ADD_AND_SUB_ENDING;
+                // set signals
+            end
 
             //  ADD, AND, SUB ENDING STATE
-            STATE_ADD_AND_SUB_ENDING:
+            STATE_ADD_AND_SUB_ENDING: begin
                 STATE = STATE_FETCH0;
+                // set signals
+            end
 
             default: 
                 STATE = STATE_RESET;
