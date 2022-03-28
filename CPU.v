@@ -155,12 +155,12 @@ wire [1:0] SMcontrol;
 wire [1:0] LMcontrol;
 
 // armazenamentos e deslocamentos
-wire MEMwrite;      // MEMÓRIA
+wire MEMwrite;             // MEMÓRIA
 wire [2:0] Shift;         // registrador de deslocamento
-wire RegWrite;       // banco de registradores
+wire RegWrite;              // banco de registradores
 
 // ULA
-wire [3:0] ALUop;
+wire [2:0] ALUop;
 wire O;         // OVERFLOW
 wire ZERO;         // ZERO on operation
 wire GT;        // Greater than
