@@ -78,9 +78,9 @@ wire [31:0] store_mask_out;
 
 
 // sign extend 1 to 32
-wire [31:0] 1to32_out;
+wire [31:0] one_to32_out;
 // sign extend 16 to 32
-wire [31:0] 16to32_out;
+wire [31:0] sixteen_to32_out;
 // shift left 16
 wire [31:0] shift16_out;
 // shift left 2 branch
@@ -121,7 +121,7 @@ wire input_to_shift_jump;
 assign input_to_shift_jump = {RS, {RT, OFSET}};
 
 wire input_jump_adres;
-assign input_jump_adres = {PC[31:28], shift2_jump_out};
+assign input_jump_adres = {PC_out[31:28], shift2_jump_out};
 
 
 
@@ -166,7 +166,7 @@ wire ZERO;         // ZERO on operation
 wire GT;        // Greater than
 wire LT;        // Less than
 wire EG;        // Equal to
-wire N          // negative
+wire N;          // negative
 
 // DIV e MULT
 wire Div_Mult_Ctrl;
@@ -267,7 +267,7 @@ Registrador B(
 );
 
 // ALUout
-Registrador PC(
+Registrador ALUout(
     clk,		
 	reset,	
 	ALUoutCtrl,	
@@ -276,7 +276,7 @@ Registrador PC(
 );
 
 // EPC
-Registrador PC(
+Registrador EPC(
     clk,		
 	reset,	
 	EPCcontrol,	
@@ -285,7 +285,7 @@ Registrador PC(
 );
 
 // MDR
-Registrador PC(
+Registrador MDR(
     clk,		
 	reset,	
 	MDRwrite,	
@@ -294,7 +294,7 @@ Registrador PC(
 );
 
 // HI
-Registrador PC(
+Registrador HI(
     clk,		
 	reset,	
 	write,	
@@ -303,7 +303,7 @@ Registrador PC(
 );
 
 // LO
-Registrador PC(
+Registrador LO(
     clk,		
 	reset,	
 	write,	
@@ -333,12 +333,12 @@ store_mask STORE_MASK(
 // sign extend 1 to 32
 sign_extend_1to32 sign_extend_1to32(
 	.data_in(LT),
-    .data_out(1to32_out)
+    .data_out(one_to32_out)
 );
 // sign extend 16 to 32
 sign_extend_16to32 sign_extend_16to32(
 	.data_in(OFSET),
-    .data_out(16to32_out)
+    .data_out(sixteen_to32_out)
 );
 // shift left 16
 shift_left_16_lui shift_left_16_lui(
@@ -347,7 +347,7 @@ shift_left_16_lui shift_left_16_lui(
 );
 // shift left 2 branch
 shift_left_2 shift_left_2_branch(
-	.data_in(16to32_out),
+	.data_in(sixteen_to32_out),
     .data_out(shift2_branch_out)
 );
 
@@ -422,7 +422,7 @@ mux_5x1 mux_ulaB(
 	.Data_0(B_out),
     .Data_1(NUM_4),
     .Data_2(MDR_out),
-    .Data_3(16to32_out),
+    .Data_3(sixteen_to32_out),
     .Data_4(shift2_branch_out),
 
     .Selector(ALUsrcB),
@@ -451,6 +451,71 @@ mux_4x1_5 mux_Write_Reg(
 
     .Selector(RegDst),
     .Data_out(mux_Write_Reg_out)
+);
+
+
+//----------------------- CONTROL UNIT -------------------------//
+
+ctrl_unit CONTROL_UNIT(
+    .clk(clk),
+    .reset_in(reset),
+
+// instruction
+    .OPCODE(OPCODE),
+    .FUNCT(FUNCT),
+
+// flags
+
+    .O(O),         // OVERFLOW
+    .ZERO(ZERO),      // ZERO on operation
+    .GT(GT),        // Greater than
+    .LT(LT),        // Less than
+    .EG(EG),        // Equal to
+    .N(N),         // negative
+    .DIV0(DIV0),      // DIV0 exception signal
+
+// outputs
+
+// ULA
+    .ALUop(ALUop),
+
+// DIV e MULT
+    .Div_Mult_Ctrl(Div_Mult_Ctrl),
+
+// armazenamentos e deslocamentos
+    .MEMwrite(MEMwrite),             // MEMÓRIA
+    .Shift(Shift),         // registrador de deslocamento
+    .RegWrite(RegWrite),              // banco de registradores
+
+// Mascaras de Store e Load
+    .SMcontrol(SMcontrol),
+    .LMcontrol(LMcontrol),
+
+// multiplexadores
+    .EXCPcontrol(EXCPcontrol),
+    .IorD(IorD),
+    .ShiftRegCtrl(ShiftRegCtrl),
+    .ShiftAmmCtrl(ShiftAmmCtrl),
+    .RegDst(RegDst),
+    .MemToReg(MemToReg),
+    .ALUsrcA(ALUsrcA),
+    .ALUsrcB(ALUsrcB),
+    .PCsrc(PCsrc),
+
+
+// registradores
+
+    .PCwrite(PCwrite),
+    .IrWrite(IrWrite),
+    .MDRwrite(MDRwrite),
+    .write(write),     // sinal para escrever em HI e LO
+    .Awrite(Awrite),
+    .Bwrite(Bwrite),
+    .EPCcontrol(EPCcontrol),
+    .ALUoutCtrl(ALUoutCtrl),
+
+// reset 
+    .reset_out(reset)
 );
 
 endmodule

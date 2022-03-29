@@ -57,20 +57,20 @@ module control_unit(
     output wire ALUoutCtrl,
 
 // reset 
-    output wire reset_out
+    output reg reset_out
 );
 
 //-----------------------------------CONTADORES E TABELAS-------------------------------------//
     reg [6:0] STATE;    
     reg [5:0] COUNTER; // contador de clocks
     reg [42:0] STATE_OUTPUT_TABLE [0:7];
-    wire [42:0] OUTPUT_WORD; 
+    reg [42:0] OUTPUT_WORD; 
 
 
     assign ALUop = OUTPUT_WORD[42:40];
     assign Div_Mult_Ctrl = OUTPUT_WORD[39];
     assign MEMwrite = OUTPUT_WORD[38];
-    assign Shift = OUTPUT_WORD[37:35];file
+    assign Shift = OUTPUT_WORD[37:35];
     assign RegWrite = OUTPUT_WORD[34];
     assign SMcontrol = OUTPUT_WORD[33:32];
     assign LMcontrol = OUTPUT_WORD[31:30];
@@ -91,7 +91,7 @@ module control_unit(
     assign Bwrite = OUTPUT_WORD[3];
     assign EPCcontrol = OUTPUT_WORD[2];
     assign ALUoutCtrl = OUTPUT_WORD[1];
-    assign reset_out = OUTPUT_WORD[0];
+    //assign reset_out = OUTPUT_WORD[0];
 
     //assign OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE];
 
@@ -172,12 +172,12 @@ initial begin
 //     // RegDst = 3           /21:20
 //     // MemToReg = 4         /19:17
 //     // reset_out = 1        /0
-//     STATE_OUTPUT_TABLE[STATE_RESET] = 43'd0;
-//
-//     STATE_OUTPUT_TABLE[STATE_RESET][34] = 1;        // RegWrite =1          /34
-//     STATE_OUTPUT_TABLE[STATE_RESET][21:20] = 2'd3;   // RegDst = 3           /21:20
-//     STATE_OUTPUT_TABLE[STATE_RESET][19:17] = 3'd4;   // MemToReg = 4         /19:17
-//     STATE_OUTPUT_TABLE[STATE_RESET][0] = 1;         // reset_out = 1        /0
+     STATE_OUTPUT_TABLE[STATE_RESET] = 43'd0;
+
+     STATE_OUTPUT_TABLE[STATE_RESET][34] = 1;        // RegWrite =1          /34
+     STATE_OUTPUT_TABLE[STATE_RESET][21:20] = 2'd3;   // RegDst = 3           /21:20
+     STATE_OUTPUT_TABLE[STATE_RESET][19:17] = 3'd4;   // MemToReg = 4         /19:17
+     STATE_OUTPUT_TABLE[STATE_RESET][0] = 1;         // reset_out = 1        /0
 //     ///////////////   RESET   /////////////
 
 //      ///////////////  STATE_FETCH0   ///////////
@@ -189,11 +189,11 @@ initial begin
 //      // ALUSrcB = 1         /14:12   
 //      // ALUop = 1           /42:40    
 //      // PCSrc = 2           /11:9 
-//      STATE_OUTPUT_TABLE[STATE_FETCH0] = 43'd0;
-//
-//      STATE_OUTPUT_TABLE[STATE_FETCH0][14:12] = 3'd1;
-//      STATE_OUTPUT_TABLE[STATE_FETCH0][42:40] = 3'd1;
-//      STATE_OUTPUT_TABLE[STATE_FETCH0][11:9] = 3'd2;
+      STATE_OUTPUT_TABLE[STATE_FETCH0] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_FETCH0][14:12] = 3'd1;
+      STATE_OUTPUT_TABLE[STATE_FETCH0][42:40] = 3'd1;
+      STATE_OUTPUT_TABLE[STATE_FETCH0][11:9] = 3'd2;
 //      ///////////////  STATE_FETCH0   ///////////
 
 //      ///////////////  STATE_FETCH1     ///////////////////
@@ -205,23 +205,23 @@ initial begin
 //      // ALUSrcB = 1      /14:12
 //      // ALUop = 1        /42:40
 //      // PCSrc = 2        /11:9
-//      STATE_OUTPUT_TABLE[STATE_FETCH1] = 43'd0;
-//     
-//      STATE_OUTPUT_TABLE[STATE_FETCH1][8] = 1;
-//      STATE_OUTPUT_TABLE[STATE_FETCH1][7] = 1;
-//      STATE_OUTPUT_TABLE[STATE_FETCH1][14:12] = 3'd1;
-//      STATE_OUTPUT_TABLE[STATE_FETCH1][42:40] = 3'd1;
-//      STATE_OUTPUT_TABLE[STATE_FETCH1][11:9] = 3'd2;
+      STATE_OUTPUT_TABLE[STATE_FETCH1] = 43'd0;
+     
+      STATE_OUTPUT_TABLE[STATE_FETCH1][8] = 1;
+      STATE_OUTPUT_TABLE[STATE_FETCH1][7] = 1;
+      STATE_OUTPUT_TABLE[STATE_FETCH1][14:12] = 3'd1;
+      STATE_OUTPUT_TABLE[STATE_FETCH1][42:40] = 3'd1;
+      STATE_OUTPUT_TABLE[STATE_FETCH1][11:9] = 3'd2;
 //      ///////////////  STATE_FETCH1     ///////////////////
 
 //      ///////////////  STATE_DECODE0     //////////////////////////
 //      // ALUSrcA = 0 
 //      // ALUSrcB = 3      /14:12
 //      // ALUop = 1        /42:40
-//      STATE_OUTPUT_TABLE[STATE_DECODE0] = 43'd0;
-//      
-//      STATE_OUTPUT_TABLE[STATE_DECODE0][14:12] = 3'd3;
-//      STATE_OUTPUT_TABLE[STATE_DECODE0][42:40] = 3'd1; 
+      STATE_OUTPUT_TABLE[STATE_DECODE0] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_DECODE0][14:12] = 3'd3;
+      STATE_OUTPUT_TABLE[STATE_DECODE0][42:40] = 3'd1; 
 //      ///////////////  STATE_DECODE0     //////////////////////////
      
 //      ///////////////  STATE_DECODE1   /////////////////////////////
@@ -231,23 +231,23 @@ initial begin
 //      // Awrite = 1       /4
 //      // Bwrite = 1       /3
 //      // ALUoutCtrl = 1   /1
-//      STATE_OUTPUT_TABLE[STATE_DECODE1] = 43'd0;
-//      
-//      STATE_OUTPUT_TABLE[STATE_DECODE1][14:12] = 3'd3;
-//      STATE_OUTPUT_TABLE[STATE_DECODE1][42:40] = 3'd1;
-//      STATE_OUTPUT_TABLE[STATE_DECODE1][4] = 1;
-//      STATE_OUTPUT_TABLE[STATE_DECODE1][3] = 1;
-//      STATE_OUTPUT_TABLE[STATE_DECODE1][1] = 1;
+      STATE_OUTPUT_TABLE[STATE_DECODE1] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_DECODE1][14:12] = 3'd3;
+      STATE_OUTPUT_TABLE[STATE_DECODE1][42:40] = 3'd1;
+      STATE_OUTPUT_TABLE[STATE_DECODE1][4] = 1;
+     STATE_OUTPUT_TABLE[STATE_DECODE1][3] = 1;
+      STATE_OUTPUT_TABLE[STATE_DECODE1][1] = 1;
 //      ///////////////  STATE_DECODE1   /////////////////////////////
     
 //      ///////////////  STATE_ADD0   /////////////////////
 //      // ALUSrcA = 2      /16:15
 //      // ALUSrcB = 0      /14:12
 //      // ALUop = 1        /42:40
-//      STATE_OUTPUT_TABLE[STATE_ADD0] = 43'd0;
-//      
-//      STATE_OUTPUT_TABLE[STATE_ADD0][16:15] = 2'd2;
-//      STATE_OUTPUT_TABLE[STATE_ADD0][42:40] = 3'd1;
+      STATE_OUTPUT_TABLE[STATE_ADD0] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_ADD0][16:15] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_ADD0][42:40] = 3'd1;
 //      ///////////////  STATE_ADD0   /////////////////////
 
 //      ///////////////  STATE_ADD1   ////////////////////
@@ -255,11 +255,11 @@ initial begin
 //      // ALUSrcB = 0      /14:12
 //      // ALUop = 1        /42:40
 //      // ALUoutCtrl = 1   /1
-//      STATE_OUTPUT_TABLE[STATE_ADD1] = 43'd0;
-//      
-//      STATE_OUTPUT_TABLE[STATE_ADD0][16:15] = 2'd2;
-//      STATE_OUTPUT_TABLE[STATE_ADD0][42:40] = 3'd1;
-//      STATE_OUTPUT_TABLE[STATE_ADD0][1] = 1;
+      STATE_OUTPUT_TABLE[STATE_ADD1] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_ADD0][16:15] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_ADD0][42:40] = 3'd1;
+      STATE_OUTPUT_TABLE[STATE_ADD0][1] = 1;
 //      ///////////////  STATE_ADD1   ////////////////////
     
 //      ///////////////  STATE_ADD_AND_SUB_ENDING  ////////////////
@@ -268,14 +268,15 @@ initial begin
 //      // RegDst = 1       /21:20   
 //      // MemToReg = 6     /19:17
 //      // RegWrite = 1     /34
-//      STATE_OUTPUT_TABLE[STATE_ADD_AND_SUB_ENDING] = 43'd0;
-//       
-//      STATE_OUTPUT_TABLE[STATE_ADD_AND_SUB_ENDING][21:20] = 2'd1;
-//      STATE_OUTPUT_TABLE[STATE_ADD_AND_SUB_ENDING][19:17] = 3'd6;
-//      STATE_OUTPUT_TABLE[STATE_ADD_AND_SUB_ENDING][34] = 1;
+      STATE_OUTPUT_TABLE[STATE_ADD_AND_SUB_ENDING] = 43'd0;
+       
+      STATE_OUTPUT_TABLE[STATE_ADD_AND_SUB_ENDING][21:20] = 2'd1;
+      STATE_OUTPUT_TABLE[STATE_ADD_AND_SUB_ENDING][19:17] = 3'd6;
+      STATE_OUTPUT_TABLE[STATE_ADD_AND_SUB_ENDING][34] = 1;
 //     //------------------  FIM DA INICIALIZAÇÃO DA TABELA DE OUTPUTS  ------------------//
 
-    STATE = STATE_RESET;
+    //STATE = STATE_RESET;
+    reset_out = 1'b1;
     COUNTER = 0;
 end
 
@@ -284,6 +285,8 @@ always @(posedge clk) begin
         if (STATE != STATE_RESET) begin
             STATE = STATE_RESET;
             // set signals
+            OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_RESET];
+            reset_out = 1'b1;
             // SET COUNTER FOR NEXT OPERATION
             COUNTER = 0;
         end
@@ -291,6 +294,8 @@ always @(posedge clk) begin
         else begin
             STATE = STATE_FETCH0;
             // set signals
+            OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_RESET];
+            reset_out = 1'b0;
             // SET COUNTER FOR NEXT OPERATION
             COUNTER = 0;
         end
@@ -306,12 +311,14 @@ always @(posedge clk) begin
                 if (COUNTER == 0 || COUNTER == 1) begin
                     STATE = STATE_FETCH0;
                     // set signals
+                    OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_FETCH0];
                     // SET COUNTER FOR NEXT OPERATION
                     COUNTER = COUNTER + 1; 
                 end
                 else if (COUNTER == 2) begin
                     STATE = STATE_FETCH1;
                     // set signals
+                    OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_FETCH0];
                     // SET COUNTER FOR NEXT OPERATION
                     COUNTER = 0;
                 end
@@ -320,6 +327,7 @@ always @(posedge clk) begin
             STATE_FETCH1: begin
                 STATE = STATE_DECODE0;
                 // set signals
+                OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_FETCH1];
                 // SET COUNTER FOR NEXT OPERATION
                 COUNTER = 0;
             end
@@ -327,6 +335,7 @@ always @(posedge clk) begin
             STATE_DECODE0: begin
                 STATE = STATE_DECODE1;
                 // set signals
+                OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_DECODE0];
                 // SET COUNTER FOR NEXT OPERATION
                 COUNTER = 0;
             end
@@ -335,6 +344,7 @@ always @(posedge clk) begin
                 if (COUNTER == 0 || COUNTER == 1) begin
                     STATE = STATE_DECODE1;
                     // set signals
+                    OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_DECODE1];
                     // SET COUNTER FOR NEXT OPERATION
                     COUNTER = COUNTER + 1;
                 end
@@ -342,13 +352,15 @@ always @(posedge clk) begin
                     // modificar para um case para trtar todos os opcodes e functs
                     if (OPCODE == 0 && FUNCT == ADD) begin
                         STATE = STATE_ADD0;
-                        // SET COUNTER FOR NEXT OPERATION
                         // set signals
+                        OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_DECODE1];
+                        // SET COUNTER FOR NEXT OPERATION
                         COUNTER = 0;
                     end 
                     else begin
                         STATE = STATE_FETCH0; // esse será dps o default para tratamento de exceções
                         // set signals
+                        OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_DECODE1];
                         // SET COUNTER FOR NEXT OPERATION
                         COUNTER = 0; 
                     end
@@ -359,17 +371,20 @@ always @(posedge clk) begin
             //  ADD
             STATE_ADD0: begin
                 STATE = STATE_ADD1;
+                OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_DECODE1];
                 // set signals
             end
             STATE_ADD1: begin
                 STATE = STATE_ADD_AND_SUB_ENDING;
                 // set signals
+                OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_DECODE1];
             end
 
             //  ADD, AND, SUB ENDING STATE
             STATE_ADD_AND_SUB_ENDING: begin
                 STATE = STATE_FETCH0;
                 // set signals
+                OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_DECODE1];
             end
 
             default: 
