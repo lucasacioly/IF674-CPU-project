@@ -57,14 +57,14 @@ module control_unit(
     output wire ALUoutCtrl,
 
 // reset 
-    output reg reset_out
+    output wire reset_out
 );
 
 //-----------------------------------CONTADORES E TABELAS-------------------------------------//
     reg [6:0] STATE;    
     reg [5:0] COUNTER; // contador de clocks
     reg [42:0] STATE_OUTPUT_TABLE [0:7];
-    reg [42:0] OUTPUT_WORD; 
+    wire [42:0] OUTPUT_WORD; 
 
 
     assign ALUop = OUTPUT_WORD[42:40];
@@ -91,9 +91,9 @@ module control_unit(
     assign Bwrite = OUTPUT_WORD[3];
     assign EPCcontrol = OUTPUT_WORD[2];
     assign ALUoutCtrl = OUTPUT_WORD[1];
-    //assign reset_out = OUTPUT_WORD[0];
+    assign reset_out = OUTPUT_WORD[0];
 
-    //assign OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE];
+    assign OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE];
 
 //--------------------------------------PARAMETROS DE ESTADO--------------------------------------//
 
@@ -276,7 +276,7 @@ initial begin
 //     //------------------  FIM DA INICIALIZAÇÃO DA TABELA DE OUTPUTS  ------------------//
 
     //STATE = STATE_RESET;
-    reset_out = 1'b1;
+    
     COUNTER = 0;
 end
 
@@ -284,18 +284,16 @@ always @(posedge clk) begin
     if (reset_in == 1'b1) begin
         if (STATE != STATE_RESET) begin
             STATE = STATE_RESET;
-            // set signals
-            OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_RESET];
-            reset_out = 1'b1;
+            
+            
             // SET COUNTER FOR NEXT OPERATION
             COUNTER = 0;
         end
         
         else begin
             STATE = STATE_FETCH0;
-            // set signals
-            OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_RESET];
-            reset_out = 1'b0;
+            
+            
             // SET COUNTER FOR NEXT OPERATION
             COUNTER = 0;
         end
@@ -310,15 +308,13 @@ always @(posedge clk) begin
             STATE_FETCH0: begin
                 if (COUNTER == 0 || COUNTER == 1) begin
                     STATE = STATE_FETCH0;
-                    // set signals
-                    OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_FETCH0];
+                    
                     // SET COUNTER FOR NEXT OPERATION
                     COUNTER = COUNTER + 1; 
                 end
                 else if (COUNTER == 2) begin
                     STATE = STATE_FETCH1;
-                    // set signals
-                    OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_FETCH0];
+                    
                     // SET COUNTER FOR NEXT OPERATION
                     COUNTER = 0;
                 end
@@ -326,16 +322,14 @@ always @(posedge clk) begin
 
             STATE_FETCH1: begin
                 STATE = STATE_DECODE0;
-                // set signals
-                OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_FETCH1];
+                
                 // SET COUNTER FOR NEXT OPERATION
                 COUNTER = 0;
             end
 
             STATE_DECODE0: begin
                 STATE = STATE_DECODE1;
-                // set signals
-                OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_DECODE0];
+                
                 // SET COUNTER FOR NEXT OPERATION
                 COUNTER = 0;
             end
@@ -343,8 +337,7 @@ always @(posedge clk) begin
             STATE_DECODE1: begin
                 if (COUNTER == 0 || COUNTER == 1) begin
                     STATE = STATE_DECODE1;
-                    // set signals
-                    OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_DECODE1];
+                    
                     // SET COUNTER FOR NEXT OPERATION
                     COUNTER = COUNTER + 1;
                 end
@@ -352,15 +345,13 @@ always @(posedge clk) begin
                     // modificar para um case para trtar todos os opcodes e functs
                     if (OPCODE == 0 && FUNCT == ADD) begin
                         STATE = STATE_ADD0;
-                        // set signals
-                        OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_DECODE1];
+                        
                         // SET COUNTER FOR NEXT OPERATION
                         COUNTER = 0;
                     end 
                     else begin
                         STATE = STATE_FETCH0; // esse será dps o default para tratamento de exceções
-                        // set signals
-                        OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_DECODE1];
+                        
                         // SET COUNTER FOR NEXT OPERATION
                         COUNTER = 0; 
                     end
@@ -371,20 +362,17 @@ always @(posedge clk) begin
             //  ADD
             STATE_ADD0: begin
                 STATE = STATE_ADD1;
-                OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_DECODE1];
-                // set signals
+                
             end
             STATE_ADD1: begin
                 STATE = STATE_ADD_AND_SUB_ENDING;
-                // set signals
-                OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_DECODE1];
+                
             end
 
             //  ADD, AND, SUB ENDING STATE
             STATE_ADD_AND_SUB_ENDING: begin
                 STATE = STATE_FETCH0;
-                // set signals
-                OUTPUT_WORD = STATE_OUTPUT_TABLE[STATE_DECODE1];
+                
             end
 
             default: 
