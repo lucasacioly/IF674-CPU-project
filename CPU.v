@@ -117,10 +117,10 @@ wire [31:0] mux_Write_Data_out;
 wire [4:0] mux_Write_Reg_out;
 
 // fios de dados obtidos por concatenação de outros fios 
-wire input_to_shift_jump;
+wire [25:0] input_to_shift_jump;
 assign input_to_shift_jump = {RS, {RT, OFSET}};
 
-wire input_jump_adres;
+wire [31:0] input_jump_adres;
 assign input_jump_adres = {PC_out[31:28], shift2_jump_out};
 
 
@@ -437,7 +437,7 @@ mux_8x1 mux_Write_Data(
     .Data_4(NUM_227),
     .Data_5(shift_out),
     .Data_6(ALUout_out),
-    .Data_7(LT),
+    .Data_7(one_to32_out),
 
     .Selector(MemToReg),
     .Data_out(mux_Write_Data_out)
@@ -461,8 +461,8 @@ control_unit CONTROL_UNIT(
     .reset_in(reset),
 
 // instruction
-    .OPCODE(OPCODE),
-    .FUNCT(FUNCT),
+    .OPCODE(OP_CODE),
+    .FUNCT(OFSET[5:0]),
 
 // flags
 
