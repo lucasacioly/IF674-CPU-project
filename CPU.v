@@ -176,7 +176,7 @@ wire DIV0;
 //----------------------------INSTANCIANDO MÓDULOS UTILIZADOS----------------------------//
 
 // ULA
-ula32 ULA(
+Ula32 ULA(
     .A(mux_ulaA_out), 			
 	.B(mux_ulaB_out), 			
 	.Seletor(ALUop), 	
@@ -315,13 +315,13 @@ Registrador LO(
 
 
 // LOAD MASK
-load_mask LOAD_MASK(
+LoadMask LOAD_MASK(
     .MR(MDR_out),
     .CT(LMcontrol),
     .OUT(load_mask_out)
 );
 // STORE MASK
-store_mask STORE_MASK(
+StoreMask STORE_MASK(
     .B(B_out),
     .MR(MDR_out),
     .CT(SMcontrol),
@@ -456,7 +456,7 @@ mux_4x1_5 mux_Write_Reg(
 
 //----------------------- CONTROL UNIT -------------------------//
 
-ctrl_unit CONTROL_UNIT(
+control_unit CONTROL_UNIT(
     .clk(clk),
     .reset_in(reset),
 

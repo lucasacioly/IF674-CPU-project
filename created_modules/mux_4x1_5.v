@@ -1,4 +1,4 @@
-module mux_4x1_4 (
+module mux_4x1_5 (
     input wire [4:0] Data_0,
     input wire [4:0] Data_1,
     input wire [4:0] Data_2,
