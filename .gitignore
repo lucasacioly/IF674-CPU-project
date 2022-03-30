@@ -3,3 +3,6 @@
 !*.*
 commit.txt
 *.vcd
+work/*
+*.mpf
+*.mti
