@@ -114,6 +114,11 @@ module control_unit(
     parameter STATE_ADD_AND_SUB_ENDING  =   7'd7;
     
 
+    // ADDI, ADDIU
+    parameter STATE_ADDI_ADDIU_0 = 7'd8; // ESTE ESTADO CONTARÁ COM UMA CHECAGEM DE OVERFLOW APENAS SE A INSTRUÇÃO EM QUESTÃO FOR O ADDI, MAS PRIMEIRO SERÁ IMPLEMENTADO O ADDIU
+    parameter STATE_ADDI_ADDIU_1 = 7'd9;
+    parameter STATE_ADDI_ADDIU_ENDING = 7'd10;
+    
     //---------------------------FIM ESTADOS--------------------------//
 
 
@@ -267,8 +272,6 @@ initial begin
 //      ///////////////  STATE_ADD1   ////////////////////
     
 //      ///////////////  STATE_ADD_AND_SUB_ENDING  ////////////////
-
-//      ///////////////  STATE_ADD_AND_SUB_ENDING  ////////////////
 //      // RegDst = 1       /21:20   
 //      // MemToReg = 6     /19:17
 //      // RegWrite = 1     /34
@@ -277,11 +280,45 @@ initial begin
       STATE_OUTPUT_TABLE[STATE_ADD_AND_SUB_ENDING][21:20] = 2'd1;
       STATE_OUTPUT_TABLE[STATE_ADD_AND_SUB_ENDING][19:17] = 3'd6;
       STATE_OUTPUT_TABLE[STATE_ADD_AND_SUB_ENDING][34] = 1;
-//     //------------------  FIM DA INICIALIZAÇÃO DA TABELA DE OUTPUTS  ------------------//
+//      ///////////////  STATE_ADD_AND_SUB_ENDING  ////////////////
 
-    //STATE = STATE_RESET;
+//      ///////////////  STATE_ADDI_ADDIU_0  ////////////////
+//      // ALUop = 1       /42:40
+//      // ALUSrcA = 2     /16:15
+//      // ALUSrcB = 3     /14:12
+      STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_0] = 43'd0;
     
-    COUNTER = 0;
+      STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_0][42:40] = 3'd1;
+      STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_0][16:15] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_0][14:12] = 3'd3;
+//      ///////////////  STATE_ADDI_ADDIU_0  ////////////////
+
+//      ///////////////  STATE_ADDI_ADDIU_1  ////////////////
+//      // ALUop = 1       /42:40
+//      // ALUSrcA = 2     /16:15
+//      // ALUSrcB = 3     /14:12
+//      // ALUoutCtrl = 1  /1
+      STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_1] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_1][42:40] = 3'd1;
+      STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_1][16:15] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_1][14:12] = 3'd3;
+      STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_1][1] = 1;
+//      ///////////////  STATE_ADDI_ADDIU_1  ////////////////
+
+//      ///////////////  STATE_ADDI_ADDIU_ENDING  ////////////////
+//      // RegDst = 0       /21:20   
+//      // MemToReg = 6     /19:17
+//      // RegWrite = 1     /34
+      STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_ENDING] = 43'd0;
+       
+      STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_ENDING][21:20] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_ENDING][19:17] = 3'd6;
+      STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_ENDING][34] = 1;
+//      ///////////////  STATE_ADDI_ADDIU_ENDING  ////////////////
+
+
+//     //------------------  FIM DA INICIALIZAÇÃO DA TABELA DE OUTPUTS  ------------------//
 end
 
 always @(posedge clk) begin
@@ -346,19 +383,23 @@ always @(posedge clk) begin
                     COUNTER = COUNTER + 1;
                 end
                 else if (COUNTER == 2) begin
-                    // modificar para um case para trtar todos os opcodes e functs
-                    if (OPCODE == 0 && FUNCT == ADD) begin
-                        STATE = STATE_ADD0;
-                        
-                        // SET COUNTER FOR NEXT OPERATION
                         COUNTER = 0;
-                    end 
-                    else begin
+                    
+                    case (OPCODE)
+                        R_instruction: begin
+                            case (FUNCT)
+                                ADD:
+                                    STATE = STATE_ADD0;
+                                default:
                         STATE = STATE_FETCH0; // esse será dps o default para tratamento de exceções
+                            endcase
+                        end
                         
-                        // SET COUNTER FOR NEXT OPERATION
-                        COUNTER = 0; 
-                    end
+                        ADDIU:
+                            STATE = STATE_ADDI_ADDIU_0;
+                        default:
+                            STATE = STATE_FETCH0; // esse será dps o default para tratamento de exceções
+                    endcase
                 end
             end
             //------     FIM ESTADOS "COMUNS"     --------//
@@ -366,21 +407,37 @@ always @(posedge clk) begin
             //  ADD
             STATE_ADD0: begin
                 STATE = STATE_ADD1;
-                
+                COUNTER = 0;
             end
             STATE_ADD1: begin
                 STATE = STATE_ADD_AND_SUB_ENDING;
-                
+                COUNTER = 0;
             end
 
             //  ADD, AND, SUB ENDING STATE
             STATE_ADD_AND_SUB_ENDING: begin
                 STATE = STATE_FETCH0;
+                COUNTER = 0;
+            end
                 
+            // ADDIU, - ADDI AINDA NÃO IMPLEMENTADO
+            STATE_ADDI_ADDIU_0: begin
+                STATE = STATE_ADDI_ADDIU_1; // ESTE ESTADO CONTARÁ COM UMA CHECAGEM DE OVERFLOW APENAS SE A INSTRUÇÃO EM QUESTÃO FOR O ADDI, MAS PRIMEIRO SERÁ IMPLEMENTADO O ADDIU
+                COUNTER = 0;
+            end
+            STATE_ADDI_ADDIU_1: begin
+                STATE = STATE_ADDI_ADDIU_ENDING;
+                COUNTER = 0;
+            end
+            STATE_ADDI_ADDIU_ENDING: begin
+                STATE = STATE_FETCH0;
+                COUNTER = 0;
             end
 
-            default: 
+            default: begin
                 STATE = STATE_RESET;
+                COUNTER = 0;
+            end
         endcase
     end
 
