@@ -98,6 +98,8 @@ module control_unit(
 //--------------------------------------PARAMETROS DE ESTADO--------------------------------------//
 
     //-----------------------------ESTADOS----------------------------//
+    //  'ACABOU DE LIGAR'
+    parameter STATE_ON                  = 7'b1111111;
     //  COMUNS
     parameter STATE_RESET               =   7'd0;
     parameter STATE_FETCH0              =   7'd1;
@@ -161,7 +163,9 @@ module control_unit(
 
 initial begin
     
+    STATE = STATE_ON;
     
+    COUNTER = 0;
 //     //----------------------  INICIALIZAÇÃO DA TABELA DE OUTPUTS  ---------------------//
 
 //     //////////////  INICIO  ////////////////
