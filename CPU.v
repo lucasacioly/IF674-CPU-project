@@ -15,6 +15,8 @@ parameter NUM_255 = 32'd255; //para os exceção
 
 //---------------------------------INSTANCIAR FIOS DA CPU-----------------------------------//
 
+wire reset_wire;
+
 //--------------------------------------fios de dados--------------------------------------// 
 
 //obs -> esses fios estão mapeados de acordo com o módulo do qual saem!
@@ -194,7 +196,7 @@ Ula32 ULA(
 // IR 
 Instr_reg IR(
     .Clk(clk),			
-	.Reset(reset),		
+	.Reset(reset_wire),		
 	.Load_ir(IrWrite),		
 	.Entrada(mem_out),		
 	.Instr31_26(OP_CODE),	
@@ -215,7 +217,7 @@ Memoria memory(
 // BANCO DE REGISTRADORES
 Banco_reg banco_reg (
     .Clk(clk),
-    .Reset(reset),
+    .Reset(reset_wire),
     .RegWrite(RegWrite),
     .ReadReg1(RS),
     .ReadReg2(RT),
@@ -231,7 +233,7 @@ Banco_reg banco_reg (
 // REGISTRADOR DE DESLOCAMENTOS
 RegDesloc shift_reg(
     .Clk(clk),		
-	.Reset(reset),	
+	.Reset(reset_wire),	
 	.Shift(Shift),	 
 	.N(mux_Shift_Ammount_out),		
 	.Entrada(mux_Shift_Reg_out), 
@@ -242,7 +244,7 @@ RegDesloc shift_reg(
 // PC
 Registrador PC(
     clk,		
-	reset,	
+	reset_wire,	
 	PCwrite,
 	mux_PC_out, 
 	PC_out
@@ -251,7 +253,7 @@ Registrador PC(
 // REG A
 Registrador A(
     clk,		
-	reset,	
+	reset_wire,	
 	Awrite,	
 	read_data_1,
 	A_out
@@ -260,7 +262,7 @@ Registrador A(
 // REG B
 Registrador B(
     clk,		
-	reset,	
+	reset_wire,	
 	Bwrite,	
 	read_data_2,
 	B_out
@@ -269,7 +271,7 @@ Registrador B(
 // ALUout
 Registrador ALUout(
     clk,		
-	reset,	
+	reset_wire,	
 	ALUoutCtrl,	
 	ula_result,
 	ALUout_out
@@ -278,7 +280,7 @@ Registrador ALUout(
 // EPC
 Registrador EPC(
     clk,		
-	reset,	
+	reset_wire,	
 	EPCcontrol,	
 	ula_result,
 	EPC_out
@@ -287,7 +289,7 @@ Registrador EPC(
 // MDR
 Registrador MDR(
     clk,		
-	reset,	
+	reset_wire,	
 	MDRwrite,	
 	mem_out,
 	MDR_out
@@ -296,7 +298,7 @@ Registrador MDR(
 // HI
 Registrador HI(
     clk,		
-	reset,	
+	reset_wire,	
 	write,	
 	div_mult_hi,
 	HI_out
@@ -305,7 +307,7 @@ Registrador HI(
 // LO
 Registrador LO(
     clk,		
-	reset,	
+	reset_wire,	
 	write,	
 	div_mult_lo,
 	LO_out
@@ -515,7 +517,7 @@ control_unit CONTROL_UNIT(
     .ALUoutCtrl(ALUoutCtrl),
 
 // reset 
-    .reset_out(reset)
+    .reset_out(reset_wire)
 );
 
 endmodule
