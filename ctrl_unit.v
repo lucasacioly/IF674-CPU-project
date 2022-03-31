@@ -63,7 +63,7 @@ module control_unit(
 //-----------------------------------CONTADORES E TABELAS-------------------------------------//
     reg [6:0] STATE;    
     reg [5:0] COUNTER; // contador de clocks
-    reg [42:0] STATE_OUTPUT_TABLE [0:7];
+    reg [42:0] STATE_OUTPUT_TABLE [0:68];
     wire [42:0] OUTPUT_WORD; 
 
 
