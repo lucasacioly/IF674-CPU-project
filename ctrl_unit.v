@@ -167,7 +167,7 @@ module control_unit(
 //-------------------------------------INICIALIZAÇÃO-------------------------//
 
 initial begin
-    
+
     STATE = STATE_ON;
     
     COUNTER = 0;
@@ -287,7 +287,7 @@ initial begin
 //      // ALUSrcA = 2     /16:15
 //      // ALUSrcB = 3     /14:12
       STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_0] = 43'd0;
-    
+
       STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_0][42:40] = 3'd1;
       STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_0][16:15] = 2'd2;
       STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_0][14:12] = 3'd3;
@@ -343,8 +343,9 @@ always @(posedge clk) begin
     else begin
         case (STATE)
             //------        ESTADOS "COMUNS"      --------//
-            //STATE_RESET:
-            //    STATE = STATE_FETCH0;  //////desnecessário
+            STATE_RESET: begin
+                STATE = STATE_FETCH0;
+            end
 
             STATE_FETCH0: begin
                 if (COUNTER == 0 || COUNTER == 1) begin
@@ -383,7 +384,7 @@ always @(posedge clk) begin
                     COUNTER = COUNTER + 1;
                 end
                 else if (COUNTER == 2) begin
-                        COUNTER = 0;
+                    COUNTER = 0;
                     
                     case (OPCODE)
                         R_instruction: begin
@@ -391,10 +392,10 @@ always @(posedge clk) begin
                                 ADD:
                                     STATE = STATE_ADD0;
                                 default:
-                        STATE = STATE_FETCH0; // esse será dps o default para tratamento de exceções
+                                    STATE = STATE_FETCH0; // esse será dps o default para tratamento de exceções
                             endcase
                         end
-                        
+
                         ADDIU:
                             STATE = STATE_ADDI_ADDIU_0;
                         default:
@@ -413,13 +414,13 @@ always @(posedge clk) begin
                 STATE = STATE_ADD_AND_SUB_ENDING;
                 COUNTER = 0;
             end
-
+            
             //  ADD, AND, SUB ENDING STATE
             STATE_ADD_AND_SUB_ENDING: begin
                 STATE = STATE_FETCH0;
                 COUNTER = 0;
             end
-                
+            
             // ADDIU, - ADDI AINDA NÃO IMPLEMENTADO
             STATE_ADDI_ADDIU_0: begin
                 STATE = STATE_ADDI_ADDIU_1; // ESTE ESTADO CONTARÁ COM UMA CHECAGEM DE OVERFLOW APENAS SE A INSTRUÇÃO EM QUESTÃO FOR O ADDI, MAS PRIMEIRO SERÁ IMPLEMENTADO O ADDIU
@@ -433,7 +434,7 @@ always @(posedge clk) begin
                 STATE = STATE_FETCH0;
                 COUNTER = 0;
             end
-
+            
             default: begin
                 STATE = STATE_RESET;
                 COUNTER = 0;
