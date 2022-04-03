@@ -18,6 +18,14 @@ AVISOS
     4 - os fios de dados estão instanciados a partir do módulo que originou
         esses dados.
     
+    5 - Na unidade de controle verificar se há falta de begin/end 
+        nos statements dos cases caso haja erro de compilação!!
+
+    6 - caso Jr, break e os branches não funcionem, adicionar mais um ciclo de clock para
+        cada etapa intermediária dessas instruções.
+
+    7 - Problemas nos branches podem estar relacionados com o fato de 
+        tratar duas instruções no mesmo estado
 DÚVIDAS
 
     

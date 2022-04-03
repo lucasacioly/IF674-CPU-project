@@ -110,15 +110,45 @@ module control_unit(
     parameter STATE_ADD0                =   7'd5;
     parameter STATE_ADD1                =   7'd6;
 
+    // AND 
+    parameter STATE_AND_0               = 7'd11;
+    parameter STATE_AND_1               = 7'd12;
+
+    // SUB 
+    parameter STATE_SUB_0               = 7'd13;
+    parameter STATE_SUB_1               = 7'd14;
+
     //  ADD, AND, SUB ENDING STATE
     parameter STATE_ADD_AND_SUB_ENDING  =   7'd7;
     
 
     // ADDI, ADDIU
-    parameter STATE_ADDI_ADDIU_0 = 7'd8; // ESTE ESTADO CONTARÁ COM UMA CHECAGEM DE OVERFLOW APENAS SE A INSTRUÇÃO EM QUESTÃO FOR O ADDI, MAS PRIMEIRO SERÁ IMPLEMENTADO O ADDIU
-    parameter STATE_ADDI_ADDIU_1 = 7'd9;
-    parameter STATE_ADDI_ADDIU_ENDING = 7'd10;
-    
+    parameter STATE_ADDI_ADDIU_0        = 7'd8; // ESTE ESTADO CONTARÁ COM UMA CHECAGEM DE OVERFLOW APENAS SE A INSTRUÇÃO EM QUESTÃO FOR O ADDI, MAS PRIMEIRO SERÁ IMPLEMENTADO O ADDIU
+    parameter STATE_ADDI_ADDIU_1        = 7'd9;
+    parameter STATE_ADDI_ADDIU_ENDING   = 7'd10;
+
+    // MFHI
+    parameter STATE_MFHI                = 7'd15;
+
+    // MFLO
+    parameter STATE_MFLO                = 7'd16;
+
+
+    // JR
+    parameter STATE_JR                  = 7'd17;
+
+    // BREAK
+    parameter STATE_BREAK               = 7'd18;
+
+    // BEQ/BNE
+    parameter STATE_BEQ_BNE             = 7'd19;
+
+    // BLE/BGT
+    parameter STATE_BLE_BGT             = 7'd20;
+
+    // JR, BREAK, BEQ/BNE, BLE/BGT ENDING STATE
+    parameter STATE_JR_BREAK_BRANCH_ENDING = 7'd21;
+
     //---------------------------FIM ESTADOS--------------------------//
 
 
@@ -171,7 +201,7 @@ initial begin
     STATE = STATE_ON;
     
     COUNTER = 0;
-//     //----------------------  INICIALIZAÇÃO DA TABELA DE OUTPUTS  ---------------------//
+//     //---------------------------------  INICIALIZAÇÃO DA TABELA DE OUTPUTS  -------------------------------//
 
 //     //////////////  INICIO  ////////////////
         
@@ -245,7 +275,7 @@ initial begin
       STATE_OUTPUT_TABLE[STATE_DECODE1][14:12] = 3'd3;
       STATE_OUTPUT_TABLE[STATE_DECODE1][42:40] = 3'd1;
       STATE_OUTPUT_TABLE[STATE_DECODE1][4] = 1;
-     STATE_OUTPUT_TABLE[STATE_DECODE1][3] = 1;
+      STATE_OUTPUT_TABLE[STATE_DECODE1][3] = 1;
       STATE_OUTPUT_TABLE[STATE_DECODE1][1] = 1;
 //      ///////////////  STATE_DECODE1   /////////////////////////////
     
@@ -270,7 +300,54 @@ initial begin
       STATE_OUTPUT_TABLE[STATE_ADD0][42:40] = 3'd1;
       STATE_OUTPUT_TABLE[STATE_ADD0][1] = 1;
 //      ///////////////  STATE_ADD1   ////////////////////
+
+
+//      /////////////// STATE_AND_0  /////////////////////
+//      // ALUSrcA = 2      /16:15
+//      // ALUSrcB = 0      /14:12
+//      // ALUop = 3        /42:40
+      STATE_OUTPUT_TABLE[STATE_AND_0] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_AND_0][16:15] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_AND_0][42:40] = 3'd3;
+//      /////////////// STATE_AND_0  /////////////////////
+
+//      /////////////// STATE_AND_1  /////////////////////
+//      // ALUSrcA = 2      /16:15
+//      // ALUSrcB = 0      /14:12
+//      // ALUop = 3        /42:40
+//      // ALUoutCtrl = 1   /1
+      STATE_OUTPUT_TABLE[STATE_AND_1] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_AND_1][16:15] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_AND_1][42:40] = 3'd3;
+      STATE_OUTPUT_TABLE[STATE_AND_1][1] = 1;
+//      /////////////// STATE_AND_1  /////////////////////
+
+
+//      /////////////// STATE_SUB_0  /////////////////////
+//      // ALUSrcA = 2      /16:15
+//      // ALUSrcB = 0      /14:12
+//      // ALUop = 2        /42:40
+      STATE_OUTPUT_TABLE[STATE_SUB_0] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_SUB_0][16:15] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_SUB_0][42:40] = 3'd2;
+//      /////////////// STATE_SUB_0  /////////////////////
+
+//      /////////////// STATE_SUB_1  /////////////////////
+//      // ALUSrcA = 2      /16:15
+//      // ALUSrcB = 0      /14:12
+//      // ALUop = 2        /42:40
+//      // ALUoutCtrl = 1   /1
+      STATE_OUTPUT_TABLE[STATE_SUB_1] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_SUB_1][16:15] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_SUB_1][42:40] = 3'd2;
+      STATE_OUTPUT_TABLE[STATE_SUB_1][1] = 1;
+//      /////////////// STATE_SUB_1  /////////////////////
     
+
 //      ///////////////  STATE_ADD_AND_SUB_ENDING  ////////////////
 //      // RegDst = 1       /21:20   
 //      // MemToReg = 6     /19:17
@@ -281,6 +358,7 @@ initial begin
       STATE_OUTPUT_TABLE[STATE_ADD_AND_SUB_ENDING][19:17] = 3'd6;
       STATE_OUTPUT_TABLE[STATE_ADD_AND_SUB_ENDING][34] = 1;
 //      ///////////////  STATE_ADD_AND_SUB_ENDING  ////////////////
+
 
 //      ///////////////  STATE_ADDI_ADDIU_0  ////////////////
 //      // ALUop = 1       /42:40
@@ -316,6 +394,88 @@ initial begin
       STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_ENDING][19:17] = 3'd6;
       STATE_OUTPUT_TABLE[STATE_ADDI_ADDIU_ENDING][34] = 1;
 //      ///////////////  STATE_ADDI_ADDIU_ENDING  ////////////////
+
+
+
+//      ///////////////  STATE_MFHI  ////////////////
+//      // RegDst = 1       /21:20   
+//      // MemToReg = 2     /19:17
+//      // RegWrite = 1     /34
+      STATE_OUTPUT_TABLE[STATE_MFHI] = 43'd0;
+       
+      STATE_OUTPUT_TABLE[STATE_MFHI][21:20] = 2'd1;
+      STATE_OUTPUT_TABLE[STATE_MFHI][19:17] = 3'd2;
+      STATE_OUTPUT_TABLE[STATE_MFHI][34] = 1;
+//      ///////////////  STATE_MFHI  ////////////////
+
+//      ///////////////  STATE_MFLO  ////////////////
+//      // RegDst = 1       /21:20   
+//      // MemToReg = 1     /19:17
+//      // RegWrite = 1     /34
+      STATE_OUTPUT_TABLE[STATE_MFLO] = 43'd0;
+       
+      STATE_OUTPUT_TABLE[STATE_MFLO][21:20] = 2'd1;
+      STATE_OUTPUT_TABLE[STATE_MFLO][19:17] = 3'd1;
+      STATE_OUTPUT_TABLE[STATE_MFLO][34] = 1;
+//      ///////////////  STATE_MFLO  ////////////////
+
+
+//      ///////////////  STATE_JR  ////////////////
+//      // ALUSrcA = 2      /16:15
+//      // PCSrc = 2        /11:9      
+//      // ALUop =  0       /42:40     
+      STATE_OUTPUT_TABLE[STATE_JR] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_JR][16:15] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_JR][11:9] = 3'd2;
+      STATE_OUTPUT_TABLE[STATE_JR][42:40] = 3'd0;
+//      ///////////////  STATE_JR  ////////////////
+
+//      ///////////////  STATE_BEQ_BNE  ////////////////
+//      // ALUSrcA = 2      /16:15
+//      // ALUSrcB = 0      /14:12
+//      // ALUop =  2       /42:40
+//      // PCSrc = 4        /11:9           
+      STATE_OUTPUT_TABLE[STATE_BEQ_BNE] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_BEQ_BNE][16:15] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_BEQ_BNE][14:12] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_BEQ_BNE][42:40] = 3'd2;
+      STATE_OUTPUT_TABLE[STATE_BEQ_BNE][11:9] = 3'd4;
+//      ///////////////  STATE_BEQ_BNE  ////////////////
+
+//      ///////////////  STATE_BLE_BGT  ////////////////
+//      // ALUSrcA = 2      /16:15
+//      // ALUSrcB = 0      /14:12
+//      // ALUop =  7       /42:40
+//      // PCSrc = 4        /11:9           
+      STATE_OUTPUT_TABLE[STATE_BLE_BGT] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_BLE_BGT][16:15] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_BLE_BGT][14:12] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_BLE_BGT][42:40] = 3'd7;
+      STATE_OUTPUT_TABLE[STATE_BLE_BGT][11:9] = 3'd4;
+//      ///////////////  STATE_BLE_BGT  ////////////////
+
+//      ///////////////  STATE_BREAK  ////////////////
+//      // ALUSrcA = 0      /16:15
+//      // ALUSrcB = 1      /14:12
+//      // ALUop =  2       /42:40
+//      // PCSrc = 2        /11:9           
+      STATE_OUTPUT_TABLE[STATE_JR] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_JR][16:15] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_JR][14:12] = 2'd1;
+      STATE_OUTPUT_TABLE[STATE_JR][42:40] = 3'd2;
+      STATE_OUTPUT_TABLE[STATE_JR][11:9] = 3'd2;
+//      ///////////////  STATE_BREAK  ////////////////
+
+//      ///////////////  STATE_JR_BREAK_BRANCH_ENDING  ////////////////
+//      // PCwrite = 1      /8
+      STATE_OUTPUT_TABLE[STATE_JR_BREAK_BRANCH_ENDING] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_JR_BREAK_BRANCH_ENDING][8] = 1;
+//      ///////////////  STATE_JR_BREAK_BRANCH_ENDING  ////////////////
 
 
 //     //------------------  FIM DA INICIALIZAÇÃO DA TABELA DE OUTPUTS  ------------------//
@@ -391,6 +551,22 @@ always @(posedge clk) begin
                             case (FUNCT)
                                 ADD:
                                     STATE = STATE_ADD0;
+                                AND:
+                                    STATE = STATE_AND_0;
+                                SUB:
+                                    STATE = STATE_SUB_0;
+
+                                MFHI:
+                                    STATE = STATE_MFHI;
+
+                                MFLO:
+                                    STATE = STATE_MFLO;
+                                
+                                JR:
+                                    STATE = STATE_JR;
+                                
+                                BREAK:
+                                    STATE = STATE_BREAK;
                                 default:
                                     STATE = STATE_FETCH0; // esse será dps o default para tratamento de exceções
                             endcase
@@ -398,6 +574,16 @@ always @(posedge clk) begin
 
                         ADDIU:
                             STATE = STATE_ADDI_ADDIU_0;
+
+                        BEQ:
+                            STATE = STATE_BEQ_BNE;
+                        BNE:
+                            STATE = STATE_BEQ_BNE;
+                        BLE:
+                            STATE = STATE_BLE_BGT;
+                        BGT:
+                            STATE = STATE_BLE_BGT;
+
                         default:
                             STATE = STATE_FETCH0; // esse será dps o default para tratamento de exceções
                     endcase
@@ -411,6 +597,26 @@ always @(posedge clk) begin
                 COUNTER = 0;
             end
             STATE_ADD1: begin
+                STATE = STATE_ADD_AND_SUB_ENDING;
+                COUNTER = 0;
+            end
+
+            //  AND
+            STATE_AND_0: begin
+                STATE = STATE_AND_1;
+                COUNTER = 0;
+            end
+            STATE_AND_1: begin
+                STATE = STATE_ADD_AND_SUB_ENDING;
+                COUNTER = 0;
+            end
+
+            //  SUB
+            STATE_SUB_0: begin
+                STATE = STATE_SUB_1;
+                COUNTER = 0;
+            end
+            STATE_SUB_1: begin
                 STATE = STATE_ADD_AND_SUB_ENDING;
                 COUNTER = 0;
             end
@@ -434,11 +640,73 @@ always @(posedge clk) begin
                 STATE = STATE_FETCH0;
                 COUNTER = 0;
             end
+
+            //  MFHI
+            STATE_MFHI: begin
+                STATE = STATE_FETCH0;
+                COUNTER = 0;
+            end
+
+            // FMLO
+            STATE_MFLO: begin
+                STATE = STATE_FETCH0;
+                COUNTER = 0;
+            end
+            
+            //  JR
+            STATE_JR: begin
+                STATE = STATE_JR_BREAK_BRANCH_ENDING;
+                COUNTER = 0;
+            end
+            
+            // BREAK
+            STATE_BREAK: begin
+                STATE = STATE_JR_BREAK_BRANCH_ENDING;
+                COUNTER = 0;
+            end
+            
+            // BEQ/BNE
+            STATE_BEQ_BNE: begin
+                if (OPCODE == BEQ & Z == 1) begin
+                    STATE = STATE_JR_BREAK_BRANCH_ENDING;
+                    COUNTER = 0; 
+                end
+                else if (OPCODE == BNE & Z == 0) begin
+                    STATE = STATE_JR_BREAK_BRANCH_ENDING;
+                    COUNTER = 0;
+                end
+                else begin
+                    STATE = STATE_FETCH0;
+                end
+            end
+
+            // BLE/BGT
+            STATE_BLE_BGT: begin
+                if (OPCODE == BGT & GT == 1) begin
+                    STATE = STATE_JR_BREAK_BRANCH_ENDING;
+                    COUNTER = 0; 
+                end
+                else if (OPCODE == BLE & GT == 0) begin
+                    STATE = STATE_JR_BREAK_BRANCH_ENDING;
+                    COUNTER = 0;
+                end
+                else begin
+                    STATE = STATE_FETCH0;
+                    COUNTER = 0;
+                end
+            end
+
+            // JR, BREAK, BRANCHES ENDING STATE
+            STATE_JR_BREAK_BRANCH_ENDING: begin
+                STATE = STATE_FETCH0;
+                COUNTER = 0;
+            end
             
             default: begin
                 STATE = STATE_RESET;
                 COUNTER = 0;
             end
+
         endcase
     end
 

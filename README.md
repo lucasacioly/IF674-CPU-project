@@ -66,32 +66,32 @@ Essas são as instruções que conseguimos fazer:
 
 ### Instruções do tipo R
 
-- [] add rd, rs, rt
-- [] and rd, rs, rt
-- [] sub rd, rs, rt
+- [x] add rd, rs, rt
+- [x] and rd, rs, rt
+- [x] sub rd, rs, rt
 - [] sll rd, rt, shamt
 - [] sra rd, rt, shamt
 - [] srl rd, rt, shamt 
 - [] sllv rd, rs, rt
 - [] srav rd, rs, rt
 - [] slt rd, rs, rt
-- [] jr rs
-- [] break 
+- [x] jr rs
+- [x] break 
 - [] Rte 
 - [] div rs, rt
 - [] mult rs, rt
-- [] mfhi rd
-- [] mflo rd
+- [x] mfhi rd
+- [x] mflo rd
 - [] addm rs, rt, rd
 
 ### Instruções do tipo I
 
 - [] addi rt, rs, imediato
-- [] addiu rt, rs, imediato
-- [] beq rs, rt, offset
-- [] bne rs, rt, offset 
-- [] ble rs, rt, offset 
-- [] bgt rs, rtx, offset 
+- [x] addiu rt, rs, imediato
+- [X] beq rs, rt, offset
+- [X] bne rs, rt, offset 
+- [X] ble rs, rt, offset 
+- [X] bgt rs, rtx, offset 
 - [] lb rt, offset(rs) 
 - [] lh rt, offset(rs)
 - [] lw rt, offset(rs)
