@@ -195,6 +195,27 @@ module control_unit(
     // RTE
     parameter STATE_RTE                     = 7'd34;
 
+    // STORES, LOADS and SLLM
+    parameter STATE_LOAD_STORES_0           = 7'd35;
+    parameter STATE_LOAD_STORES_1           = 7'd36;
+    parameter STATE_LOAD_STORES_2           = 7'd37;
+    parameter STATE_LOAD_STORES_3           = 7'd38;
+
+    parameter STATE_SW                      = 7'd39;
+    parameter STATE_SH                      = 7'd40;
+    parameter STATE_SB                      = 7'd41;
+
+    parameter STATE_LW                      = 7'd42;
+    parameter STATE_LH                      = 7'd43;
+    parameter STATE_LB                      = 7'd44;
+ 
+    parameter STATE_STORES_ENDING           = 7'd45;
+
+    parameter STATE_LOADS_ENDING             = 7'd46;
+
+    parameter STATE_SLLM_0                  = 7'd47;
+    parameter STATE_SLLM_1                  = 7'd48;
+    parameter STATE_SLLM_ENDING             = 7'd49;
 
     //---------------------------FIM ESTADOS--------------------------//
 
@@ -241,7 +262,7 @@ module control_unit(
     parameter JUMP              =   6'h2;
     parameter JAL               =   6'h3;
 
-//-------------------------------------INICIALIZAÇÃO-------------------------//
+//--------------------------------------------------  INICIALIZAÇÃO  -------------------------------------------//
 
 initial begin
 
@@ -486,7 +507,7 @@ initial begin
       STATE_OUTPUT_TABLE[STATE_BEQ_BNE] = 43'd0;
       
       STATE_OUTPUT_TABLE[STATE_BEQ_BNE][16:15] = 2'd2;
-      STATE_OUTPUT_TABLE[STATE_BEQ_BNE][14:12] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_BEQ_BNE][14:12] = 3'd0;
       STATE_OUTPUT_TABLE[STATE_BEQ_BNE][42:40] = 3'd2;
       STATE_OUTPUT_TABLE[STATE_BEQ_BNE][11:9] = 3'd4;
 //      ///////////////  STATE_BEQ_BNE  ////////////////
@@ -512,7 +533,7 @@ initial begin
       STATE_OUTPUT_TABLE[STATE_BREAK] = 43'd0;
       
       STATE_OUTPUT_TABLE[STATE_BREAK][16:15] = 2'd0;
-      STATE_OUTPUT_TABLE[STATE_BREAK][14:12] = 2'd1;
+      STATE_OUTPUT_TABLE[STATE_BREAK][14:12] = 3'd1;
       STATE_OUTPUT_TABLE[STATE_BREAK][42:40] = 3'd2;
       STATE_OUTPUT_TABLE[STATE_BREAK][11:9] = 3'd2;
 //      ///////////////  STATE_BREAK  ////////////////
@@ -623,7 +644,7 @@ initial begin
       STATE_OUTPUT_TABLE[STATE_SLT_0] = 43'd0;
       
       STATE_OUTPUT_TABLE[STATE_SLT_0][16:15] = 2'd2;
-      STATE_OUTPUT_TABLE[STATE_SLT_0][14:12] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_SLT_0][14:12] = 3'd0;
       STATE_OUTPUT_TABLE[STATE_SLT_0][42:40] = 3'd7;
 //      ///////////////  STATE_SLT_0  ////////////////
 
@@ -646,7 +667,7 @@ initial begin
       STATE_OUTPUT_TABLE[STATE_SLTI_0] = 43'd0;
       
       STATE_OUTPUT_TABLE[STATE_SLTI_0][16:15] = 2'd2;
-      STATE_OUTPUT_TABLE[STATE_SLTI_0][14:12] = 2'd3;
+      STATE_OUTPUT_TABLE[STATE_SLTI_0][14:12] = 3'd3;
       STATE_OUTPUT_TABLE[STATE_SLTI_0][42:40] = 3'd7;
 //      ///////////////  STATE_SLTI_0  ////////////////
 
@@ -679,6 +700,149 @@ initial begin
       STATE_OUTPUT_TABLE[STATE_RTE][11:9] = 3'd3;
       STATE_OUTPUT_TABLE[STATE_RTE][8] = 1;
 //      ///////////////  STATE_RTE  ////////////////
+
+
+
+
+//      ///////////////  STATE_LOAD_STORES_0  ////////////////
+//      // ALUSrcA = 2      /16:15
+//      // ALUSrcB = 3      /14:12
+//      // ALUop =  1       /42:40         
+      STATE_OUTPUT_TABLE[STATE_LOAD_STORES_0] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_LOAD_STORES_0][16:15] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_LOAD_STORES_0][14:12] = 3'd3;
+      STATE_OUTPUT_TABLE[STATE_LOAD_STORES_0][42:40] = 3'd1;
+//      ///////////////  STATE_LOAD_STORES_0  ////////////////
+
+//      ///////////////  STATE_LOAD_STORES_1  ////////////////
+//      // ALUSrcA = 2      /16:15
+//      // ALUSrcB = 3      /14:12
+//      // ALUop =  1       /42:40   
+//      // ALUoutCtrl = 1   /1      
+      STATE_OUTPUT_TABLE[STATE_LOAD_STORES_1] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_LOAD_STORES_1][16:15] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_LOAD_STORES_1][14:12] = 3'd3;
+      STATE_OUTPUT_TABLE[STATE_LOAD_STORES_1][42:40] = 3'd1;
+      STATE_OUTPUT_TABLE[STATE_LOAD_STORES_1][1] = 1;
+//      ///////////////  STATE_LOAD_STORES_1  ////////////////
+
+//      ///////////////  STATE_LOAD_STORES_2  ////////////////
+//      // iorD = 4         /27:25
+//      // MEMwrite = 0
+      STATE_OUTPUT_TABLE[STATE_LOAD_STORES_2] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_LOAD_STORES_2][27:25] = 3'd4;
+//      ///////////////  STATE_LOAD_STORES_2  ////////////////
+
+//      ///////////////  STATE_LOAD_STORES_3  ////////////////
+//      // MDRwrite = 1    /6
+      STATE_OUTPUT_TABLE[STATE_LOAD_STORES_3] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_LOAD_STORES_3][6] = 1;
+//      ///////////////  STATE_LOAD_STORES_3  ////////////////
+
+
+
+//      ///////////////  STATE_SW  ////////////////
+//      // SMcontrol = 0    /33:32
+      STATE_OUTPUT_TABLE[STATE_SW] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_SW][33:32] = 2'd0;
+//      ///////////////  STATE_SW  ////////////////
+
+//      ///////////////  STATE_SH  ////////////////
+//      // SMcontrol = 1    /33:32
+      STATE_OUTPUT_TABLE[STATE_SH] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_SH][33:32] = 2'd1;
+//      ///////////////  STATE_SH  ////////////////
+
+//      ///////////////  STATE_SB  ////////////////
+//      // SMcontrol = 2    /33:32
+      STATE_OUTPUT_TABLE[STATE_SB] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_SB][33:32] = 2'd2;
+//      ///////////////  STATE_SB  ////////////////
+
+
+//      ///////////////  STATE_LW  ////////////////
+//      // LMcontrol = 0    /31:30
+      STATE_OUTPUT_TABLE[STATE_LW] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_LW][31:30] = 2'd0;
+//      ///////////////  STATE_LW  ////////////////
+
+//      ///////////////  STATE_LH  ////////////////
+//      // LMcontrol = 1    /31:30
+      STATE_OUTPUT_TABLE[STATE_LH] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_LH][31:30] = 2'd1;
+//      ///////////////  STATE_LH  ////////////////
+
+//      ///////////////  STATE_LB  ////////////////
+//      // LMcontrol = 2    /31:30
+      STATE_OUTPUT_TABLE[STATE_LB] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_LB][31:30] = 2'd2;
+//      ///////////////  STATE_LB  ////////////////
+
+
+//      ///////////////  STATE_STORES_ENDING  ////////////////
+//      // iorD = 4         /27:25
+//      // MEMwrite = 1     /38
+      STATE_OUTPUT_TABLE[STATE_STORES_ENDING] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_STORES_ENDING][27:25] = 3'd4;
+      STATE_OUTPUT_TABLE[STATE_STORES_ENDING][38] = 1;
+//      ///////////////  STATE_STORES_ENDING  ////////////////
+
+//      ///////////////  STATE_LOADS_ENDING  ////////////////
+//      // RegDst = 0       /21:20   
+//      // MemToReg = 0     /19:17
+//      // RegWrite = 1     /34
+      STATE_OUTPUT_TABLE[STATE_LOADS_ENDING] = 43'd0;
+       
+      STATE_OUTPUT_TABLE[STATE_LOADS_ENDING][21:20] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_LOADS_ENDING][19:17] = 3'd0;
+      STATE_OUTPUT_TABLE[STATE_LOADS_ENDING][34] = 1;
+//      ///////////////  STATE_LOADS_ENDING  ////////////////
+
+
+//      ///////////////  STATE_SLLM_0  ////////////////
+//      // ShiftRegCtrl = 1     /24
+//      // ShiftAmmCtrl = 1      /23:22
+//      // shift = 1            /37:35
+      STATE_OUTPUT_TABLE[STATE_SLLV] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_SLLV][24] = 1;
+      STATE_OUTPUT_TABLE[STATE_SLLV][23:22] = 2'd1;
+      STATE_OUTPUT_TABLE[STATE_SLLV][37:35] = 3'd1;
+//      ///////////////  STATE_SLLM_0  ////////////////
+
+//      ///////////////  STATE_SLLM_1  ////////////////
+//      // ShiftRegCtrl = 1     /24
+//      // ShiftAmmCtrl = 1      /23:22
+//      // shift = 2            /37:35
+      STATE_OUTPUT_TABLE[STATE_SLLV] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_SLLV][24] = 1;
+      STATE_OUTPUT_TABLE[STATE_SLLV][23:22] = 2'd1;
+      STATE_OUTPUT_TABLE[STATE_SLLV][37:35] = 3'd2;
+//      ///////////////  STATE_SLLM_1  ////////////////
+
+//      ///////////////  STATE_SLLM_ENDING  ////////////////
+//      // RegDst = 0       /21:20   
+//      // MemToReg = 5     /19:17
+//      // RegWrite = 1     /34
+      STATE_OUTPUT_TABLE[STATE_SLLM_ENDING] = 43'd0;
+       
+      STATE_OUTPUT_TABLE[STATE_SLLM_ENDING][21:20] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_SLLM_ENDING][19:17] = 3'd5;
+      STATE_OUTPUT_TABLE[STATE_SLLM_ENDING][34] = 1;
+//      ///////////////  STATE_SLLM_ENDING  ////////////////
+
 
 //     //------------------  FIM DA INICIALIZAÇÃO DA TABELA DE OUTPUTS  ------------------//
 end
@@ -816,6 +980,23 @@ always @(posedge clk) begin
                         JUMP:
                             STATE = STATE_JUMP;
 
+
+                        SW: 
+                            STATE = STATE_LOAD_STORES_0;
+                        SH:
+                            STATE = STATE_LOAD_STORES_0;
+                        SB:
+                            STATE = STATE_LOAD_STORES_0;
+                        LW:
+                            STATE = STATE_LOAD_STORES_0;
+                        LH:
+                            STATE = STATE_LOAD_STORES_0;
+                        LB:
+                            STATE = STATE_LOAD_STORES_0;
+                        SLLM:
+                            STATE = STATE_LOAD_STORES_0;
+
+
                         default:
                             STATE = STATE_FETCH0; // esse será dps o default para tratamento de exceções de OPCODE INEXISTENTE
                     endcase
@@ -899,11 +1080,11 @@ always @(posedge clk) begin
             
             // BEQ/BNE
             STATE_BEQ_BNE: begin
-                if (OPCODE == BEQ & Z == 1) begin
+                if (OPCODE == BEQ && Z == 1) begin
                     STATE = STATE_JR_BREAK_BRANCH_ENDING;
                     COUNTER = 0; 
                 end
-                else if (OPCODE == BNE & Z == 0) begin
+                else if (OPCODE == BNE && Z == 0) begin
                     STATE = STATE_JR_BREAK_BRANCH_ENDING;
                     COUNTER = 0;
                 end
@@ -914,11 +1095,11 @@ always @(posedge clk) begin
 
             // BLE/BGT
             STATE_BLE_BGT: begin
-                if (OPCODE == BGT & GT == 1) begin
+                if (OPCODE == BGT && GT == 1) begin
                     STATE = STATE_JR_BREAK_BRANCH_ENDING;
                     COUNTER = 0; 
                 end
-                else if (OPCODE == BLE & GT == 0) begin
+                else if (OPCODE == BLE && GT == 0) begin
                     STATE = STATE_JR_BREAK_BRANCH_ENDING;
                     COUNTER = 0;
                 end
@@ -1031,6 +1212,115 @@ always @(posedge clk) begin
             STATE_RTE: begin
                 STATE = STATE_FETCH0;
                 COUNTER = 0;
+            end
+
+            // RESOLUÇÃO DE ESTADOS DE LOADS, STORES E SLLM
+
+            //STATE_LOAD_STORES_0
+            STATE_LOAD_STORES_0: begin
+                STATE = STATE_LOAD_STORES_1;
+                COUNTER = 0;
+            end
+
+            //STATE_LOAD_STORES_1
+            STATE_LOAD_STORES_1: begin
+                STATE = STATE_LOAD_STORES_2;
+                COUNTER = 0;
+            end
+
+            //STATE_LOAD_STORES_2
+            STATE_LOAD_STORES_2: begin
+                if (COUNTER == 0 || COUNTER == 1) begin
+                    STATE_LOAD_STORES_2;
+                    COUNTER = COUNTER + 1;
+                end
+                else if (COUNTER == 2) begin
+                    STATE = STATE_LOAD_STORES_3;
+                    COUNTER = 0;
+                end
+            end
+
+            //STATE_LOAD_STORES_3
+            STATE_LOAD_STORES_3: begin
+                if (OPCODE == SW) begin
+                    STATE = STATE_SW;
+                    COUNTER = 0;
+                end
+                else if (OPCODE == SH) begin
+                    STATE = STATE_SH;
+                    COUNTER = 0;
+                end
+                else if (OPCODE == SB) begin
+                    STATE = STATE_SB;
+                    COUNTER = 0;
+                end
+                else if (OPCODE == LW) begin
+                    STATE = STATE_LW;
+                    COUNTER = 0;
+                end
+                else if (OPCODE == LH) begin
+                    STATE = STATE_LH;
+                    COUNTER = 0;
+                end
+                else if (OPCODE == LB) begin
+                    STATE = STATE_LB;
+                    COUNTER = 0;
+                end
+                else if (OPCODE == SLLM) begin
+                    STATE = STATE_SLLM_0;
+                    COUNTER = 0;
+                end
+            end
+            
+            
+            //STATE_SW
+            STATE_SW: begin
+                STATE = STATE_STORES_ENDING;
+            end
+            //STATE_SH
+            STATE_SH: begin
+                STATE = STATE_STORES_ENDING;
+            end
+            //STATE_SB
+            STATE_SB: begin
+                STATE = STATE_STORES_ENDING;
+            end
+
+            
+            //STATE_LW
+            STATE_LW: begin
+                STATE = STATE_LOADS_ENDING;
+            end
+            //STATE_LH
+            STATE_LH: begin
+                STATE = STATE_LOADS_ENDING;
+            end
+            //STATE_LB
+            STATE_LB: begin
+                STATE = STATE_LOADS_ENDING;
+            end
+ 
+            
+            //STATE_STORES_ENDING
+            STATE_STORES_ENDING: begin
+                STATE = STATE_FETCH0;
+            end    
+            //STATE_LOADS_ENDING
+            STATE_LOADS_ENDING: begin
+                STATE = STATE_FETCH0;
+            end
+            
+            //STATE_SLLM_0 
+            STATE_SLLM_0: begin
+                STATE = STATE_SLLM_1;
+            end
+            //STATE_SLLM_1
+            STATE_SLLM_1: begin
+                STATE = STATE_SLLM_ENDING;
+            end
+            //STATE_SLLM_ENDING
+            STATE_SLLM_ENDING: begin
+                STATE = STATE_FETCH0;
             end
 
             default: begin
