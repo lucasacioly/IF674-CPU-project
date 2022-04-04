@@ -74,10 +74,10 @@ Essas são as instruções que conseguimos fazer:
 - [X] srl rd, rt, shamt 
 - [X] sllv rd, rs, rt
 - [X] srav rd, rs, rt
-- [] slt rd, rs, rt
+- [x] slt rd, rs, rt
 - [x] jr rs
 - [x] break 
-- [] Rte 
+- [x] Rte 
 - [] div rs, rt
 - [] mult rs, rt
 - [x] mfhi rd
@@ -99,12 +99,12 @@ Essas são as instruções que conseguimos fazer:
 - [] sb rt, offset(rs)
 - [] sh rt, offset(rs)
 - [] sw rt, offset(rs)
-- [] slti rs, rt, imediato
+- [x] slti rs, rt, imediato
 - [] sllm rt, offset(rs) 
 
 ### Instruções do tipo J
 
-- [] j offset
+- [x] j offset
 - [] jal offset
 
 ### Exceção

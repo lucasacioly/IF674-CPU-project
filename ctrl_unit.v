@@ -181,7 +181,21 @@ module control_unit(
     parameter STATE_SHIFT_END               = 7'd28;
     
     
-    
+
+    // SLT
+    parameter STATE_SLT_0                   = 7'd29;
+    parameter STATE_SLT_1                   = 7'd30;
+    // SLTI
+    parameter STATE_SLTI_0                  = 7'd31;
+    parameter STATE_SLTI_1                  = 7'd32;
+
+    // jump (J)
+    parameter STATE_JUMP                    = 7'd33;
+
+    // RTE
+    parameter STATE_RTE                     = 7'd34;
+
+
     //---------------------------FIM ESTADOS--------------------------//
 
 
@@ -600,6 +614,72 @@ initial begin
       STATE_OUTPUT_TABLE[STATE_SHIFT_END][34] = 1;
 //      ///////////////  STATE_SHIFT_END  ////////////////
 
+
+
+//      ///////////////  STATE_SLT_0  ////////////////
+//      // ALUSrcA = 2      /16:15
+//      // ALUSrcB = 0      /14:12
+//      // ALUop =  7       /42:40
+      STATE_OUTPUT_TABLE[STATE_SLT_0] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_SLT_0][16:15] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_SLT_0][14:12] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_SLT_0][42:40] = 3'd7;
+//      ///////////////  STATE_SLT_0  ////////////////
+
+//      ///////////////  STATE_SLT_1  ////////////////
+//      // RegDst = 1       /21:20   
+//      // MemToReg = 7     /19:17
+//      // RegWrite = 1     /34
+      STATE_OUTPUT_TABLE[STATE_SLT_1] = 43'd0;
+       
+      STATE_OUTPUT_TABLE[STATE_SLT_1][21:20] = 2'd1;
+      STATE_OUTPUT_TABLE[STATE_SLT_1][19:17] = 3'd7;
+      STATE_OUTPUT_TABLE[STATE_SLT_1][34] = 1;
+//      ///////////////  STATE_SLT_1  ////////////////
+
+
+//      ///////////////  STATE_SLTI_0  ////////////////
+//      // ALUSrcA = 2      /16:15
+//      // ALUSrcB = 3      /14:12
+//      // ALUop =  7       /42:40
+      STATE_OUTPUT_TABLE[STATE_SLTI_0] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_SLTI_0][16:15] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_SLTI_0][14:12] = 2'd3;
+      STATE_OUTPUT_TABLE[STATE_SLTI_0][42:40] = 3'd7;
+//      ///////////////  STATE_SLTI_0  ////////////////
+
+//      ///////////////  STATE_SLTI_1  ////////////////
+//      // RegDst = 0       /21:20   
+//      // MemToReg = 7     /19:17
+//      // RegWrite = 1     /34
+      STATE_OUTPUT_TABLE[STATE_SLTI_1] = 43'd0;
+       
+      STATE_OUTPUT_TABLE[STATE_SLTI_1][21:20] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_SLTI_1][19:17] = 3'd7;
+      STATE_OUTPUT_TABLE[STATE_SLTI_1][34] = 1;
+//      ///////////////  STATE_SLTI_1  ////////////////
+
+
+//      ///////////////  STATE_J  ////////////////
+//      // PCSrc = 0           /11:9
+//      // PCwrite = 1         /8
+      STATE_OUTPUT_TABLE[STATE_JUMP] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_JUMP][11:9] = 3'd0;
+      STATE_OUTPUT_TABLE[STATE_JUMP][8] = 1;
+//      ///////////////  STATE_J  ////////////////
+
+//      ///////////////  STATE_RTE  ////////////////
+//      // PCSrc = 3           /11:9
+//      // PCwrite = 1         /8
+      STATE_OUTPUT_TABLE[STATE_RTE] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_RTE][11:9] = 3'd3;
+      STATE_OUTPUT_TABLE[STATE_RTE][8] = 1;
+//      ///////////////  STATE_RTE  ////////////////
+
 //     //------------------  FIM DA INICIALIZAÇÃO DA TABELA DE OUTPUTS  ------------------//
 end
 
@@ -706,9 +786,15 @@ always @(posedge clk) begin
 
                                 SRAV:
                                     STATE = STATE_SLLV_SRAV_INITIAL;
+
+                                SLT: 
+                                    STATE = STATE_SLT_0;
+                                
+                                RTE: 
+                                    STATE = STATE_RTE;
                             
                                 default:
-                                    STATE = STATE_FETCH0; // esse será dps o default para tratamento de exceções
+                                    STATE = STATE_FETCH0; // esse será dps o default para tratamento de exceções 
                             endcase
                         end
 
@@ -724,8 +810,14 @@ always @(posedge clk) begin
                         BGT:
                             STATE = STATE_BLE_BGT;
 
+                        SLTI: 
+                            STATE = STATE_SLTI_0;
+                        
+                        JUMP:
+                            STATE = STATE_JUMP;
+
                         default:
-                            STATE = STATE_FETCH0; // esse será dps o default para tratamento de exceções
+                            STATE = STATE_FETCH0; // esse será dps o default para tratamento de exceções de OPCODE INEXISTENTE
                     endcase
                 end
             end
@@ -907,7 +999,40 @@ always @(posedge clk) begin
                 STATE = STATE_FETCH0;
                 COUNTER = 0;
             end
-            
+
+
+            // SLT
+            STATE_SLT_0: begin
+                STATE = STATE_SLT_1;
+                COUNTER = 0;
+            end
+            STATE_SLT_1: begin
+                STATE = STATE_FETCH0;
+                COUNTER = 0;
+            end
+
+            // SLTI
+            STATE_SLTI_0: begin
+                STATE = STATE_SLTI_1;
+                COUNTER = 0;
+            end
+            STATE_SLTI_1: begin
+                STATE = STATE_FETCH0;
+                COUNTER = 0;
+            end
+
+            // JUMP
+            STATE_JUMP: begin
+                STATE = STATE_FETCH0;
+                COUNTER = 0;
+            end
+
+            // RTE
+            STATE_RTE: begin
+                STATE = STATE_FETCH0;
+                COUNTER = 0;
+            end
+
             default: begin
                 STATE = STATE_RESET;
                 COUNTER = 0;

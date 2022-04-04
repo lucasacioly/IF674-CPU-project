@@ -26,6 +26,8 @@ AVISOS
 
     7 - Problemas nos branches podem estar relacionados com o fato de 
         tratar duas instruções no mesmo estado
+
+    8 - testar os Stores e os Loads já que funcionam com estados comuns!
 DÚVIDAS
 
     
