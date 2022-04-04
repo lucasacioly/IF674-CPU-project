@@ -92,15 +92,15 @@ Essas são as instruções que conseguimos fazer:
 - [X] bne rs, rt, offset 
 - [X] ble rs, rt, offset 
 - [X] bgt rs, rtx, offset 
-- [] lb rt, offset(rs) 
-- [] lh rt, offset(rs)
-- [] lw rt, offset(rs)
+- [x] lb rt, offset(rs) 
+- [x] lh rt, offset(rs)
+- [x] lw rt, offset(rs)
 - [] lui rt, imediato
-- [] sb rt, offset(rs)
-- [] sh rt, offset(rs)
-- [] sw rt, offset(rs)
+- [x] sb rt, offset(rs)
+- [x] sh rt, offset(rs)
+- [x] sw rt, offset(rs)
 - [x] slti rs, rt, imediato
-- [] sllm rt, offset(rs) 
+- [x] sllm rt, offset(rs) 
 
 ### Instruções do tipo J
 
