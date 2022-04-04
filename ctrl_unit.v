@@ -106,6 +106,8 @@ module control_unit(
     parameter STATE_FETCH1              =   7'd2;
     parameter STATE_DECODE0             =   7'd3;
     parameter STATE_DECODE1             =   7'd4;
+
+
     //  ADD
     parameter STATE_ADD0                =   7'd5;
     parameter STATE_ADD1                =   7'd6;
@@ -122,16 +124,19 @@ module control_unit(
     parameter STATE_ADD_AND_SUB_ENDING  =   7'd7;
     
 
+
     // ADDI, ADDIU
     parameter STATE_ADDI_ADDIU_0        = 7'd8; // ESTE ESTADO CONTARÁ COM UMA CHECAGEM DE OVERFLOW APENAS SE A INSTRUÇÃO EM QUESTÃO FOR O ADDI, MAS PRIMEIRO SERÁ IMPLEMENTADO O ADDIU
     parameter STATE_ADDI_ADDIU_1        = 7'd9;
     parameter STATE_ADDI_ADDIU_ENDING   = 7'd10;
+
 
     // MFHI
     parameter STATE_MFHI                = 7'd15;
 
     // MFLO
     parameter STATE_MFLO                = 7'd16;
+
 
 
     // JR
@@ -149,6 +154,34 @@ module control_unit(
     // JR, BREAK, BEQ/BNE, BLE/BGT ENDING STATE
     parameter STATE_JR_BREAK_BRANCH_ENDING = 7'd21;
 
+
+
+    // SLL, SRA, SRL INITIAL STATE
+    parameter STATE_SLL_SRA_SRL_INITIAL     = 7'd22;
+    
+    // SLL
+    parameter STATE_SLL                     = 7'd23; 
+    
+    // SRA
+    parameter STATE_SRA                     = 7'd24;
+    
+    // SRL
+    parameter STATE_SRL                     = 7'd24;
+    
+    // SLLV, SRAV INITIAL STATE
+    parameter STATE_SLLV_SRAV_INITIAL       = 7'd25;
+    
+    // SLLV
+    parameter STATE_SLLV                    = 7'd26;
+    
+    // SRAV
+    parameter STATE_SRAV                    = 7'd27;
+    
+    // SHIFT END STATE
+    parameter STATE_SHIFT_END               = 7'd28;
+    
+    
+    
     //---------------------------FIM ESTADOS--------------------------//
 
 
@@ -462,12 +495,12 @@ initial begin
 //      // ALUSrcB = 1      /14:12
 //      // ALUop =  2       /42:40
 //      // PCSrc = 2        /11:9           
-      STATE_OUTPUT_TABLE[STATE_JR] = 43'd0;
+      STATE_OUTPUT_TABLE[STATE_BREAK] = 43'd0;
       
-      STATE_OUTPUT_TABLE[STATE_JR][16:15] = 2'd0;
-      STATE_OUTPUT_TABLE[STATE_JR][14:12] = 2'd1;
-      STATE_OUTPUT_TABLE[STATE_JR][42:40] = 3'd2;
-      STATE_OUTPUT_TABLE[STATE_JR][11:9] = 3'd2;
+      STATE_OUTPUT_TABLE[STATE_BREAK][16:15] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_BREAK][14:12] = 2'd1;
+      STATE_OUTPUT_TABLE[STATE_BREAK][42:40] = 3'd2;
+      STATE_OUTPUT_TABLE[STATE_BREAK][11:9] = 3'd2;
 //      ///////////////  STATE_BREAK  ////////////////
 
 //      ///////////////  STATE_JR_BREAK_BRANCH_ENDING  ////////////////
@@ -477,6 +510,95 @@ initial begin
       STATE_OUTPUT_TABLE[STATE_JR_BREAK_BRANCH_ENDING][8] = 1;
 //      ///////////////  STATE_JR_BREAK_BRANCH_ENDING  ////////////////
 
+
+
+//      ///////////////  STATE_SLL_SRA_SRL_INITIAL  ////////////////
+//      // ShiftRegCtrl = 1     /24
+//      // ShiftAmmCtrl =2      /23:22
+//      // shift = 1            /37:35
+      STATE_OUTPUT_TABLE[STATE_SLL_SRA_SRL_INITIAL] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_SLL_SRA_SRL_INITIAL][24] = 1;
+      STATE_OUTPUT_TABLE[STATE_SLL_SRA_SRL_INITIAL][23:22] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_SLL_SRA_SRL_INITIAL][37:35] = 3'd1;
+//      ///////////////  STATE_SLL_SRA_SRL_INITIAL  ////////////////
+
+//      ///////////////  STATE_SLL  ////////////////
+//      // ShiftRegCtrl = 1     /24
+//      // ShiftAmmCtrl =2      /23:22
+//      // shift = 2            /37:35
+      STATE_OUTPUT_TABLE[STATE_SLL] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_SLL][24] = 1;
+      STATE_OUTPUT_TABLE[STATE_SLL][23:22] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_SLL][37:35] = 3'd2;
+//      ///////////////  STATE_SLL  ////////////////
+
+//      ///////////////  STATE_SRA  ////////////////
+//      // ShiftRegCtrl = 1     /24
+//      // ShiftAmmCtrl =2      /23:22
+//      // shift = 4            /37:35
+      STATE_OUTPUT_TABLE[STATE_SRA] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_SRA][24] = 1;
+      STATE_OUTPUT_TABLE[STATE_SRA][23:22] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_SRA][37:35] = 3'd4;
+//      ///////////////  STATE_SRA  ////////////////
+
+//      ///////////////  STATE_SRL  ////////////////
+//      // ShiftRegCtrl = 1     /24
+//      // ShiftAmmCtrl =2      /23:22
+//      // shift = 3            /37:35
+      STATE_OUTPUT_TABLE[STATE_SRL] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_SRL][24] = 1;
+      STATE_OUTPUT_TABLE[STATE_SRL][23:22] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_SRL][37:35] = 3'd3;
+//      ///////////////  STATE_SRL  ////////////////
+
+//      ///////////////  STATE_SLLV_SRAV_INITIAL  ////////////////
+//      // ShiftRegCtrl = 0     /24
+//      // ShiftAmmCtrl =0      /23:22
+//      // shift = 1            /37:35
+      STATE_OUTPUT_TABLE[STATE_SLLV_SRAV_INITIAL] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_SLLV_SRAV_INITIAL][24] = 0;
+      STATE_OUTPUT_TABLE[STATE_SLLV_SRAV_INITIAL][23:22] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_SLLV_SRAV_INITIAL][37:35] = 3'd1;
+//      ///////////////  STATE_SLLV_SRAV_INITIAL  ////////////////
+
+//      ///////////////  STATE_SRAV  ////////////////
+//      // ShiftRegCtrl = 0     /24
+//      // ShiftAmmCtrl = 0      /23:22
+//      // shift = 4            /37:35
+      STATE_OUTPUT_TABLE[STATE_SRAV] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_SRAV][24] = 0;
+      STATE_OUTPUT_TABLE[STATE_SRAV][23:22] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_SRAV][37:35] = 3'd4;
+//      ///////////////  STATE_SRAV  ////////////////
+
+//      ///////////////  STATE_SLLV  ////////////////
+//      // ShiftRegCtrl = 0     /24
+//      // ShiftAmmCtrl = 0      /23:22
+//      // shift = 2            /37:35
+      STATE_OUTPUT_TABLE[STATE_SLLV] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_SLLV][24] = 0;
+      STATE_OUTPUT_TABLE[STATE_SLLV][23:22] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_SLLV][37:35] = 3'd2;
+//      ///////////////  STATE_SLLV  ////////////////
+
+//      ///////////////  STATE_SHIFT_END  ////////////////
+//      // RegDst = 1       /21:20   
+//      // MemToReg = 5     /19:17
+//      // RegWrite = 1     /34
+      STATE_OUTPUT_TABLE[STATE_SHIFT_END] = 43'd0;
+       
+      STATE_OUTPUT_TABLE[STATE_SHIFT_END][21:20] = 2'd1;
+      STATE_OUTPUT_TABLE[STATE_SHIFT_END][19:17] = 3'd5;
+      STATE_OUTPUT_TABLE[STATE_SHIFT_END][34] = 1;
+//      ///////////////  STATE_SHIFT_END  ////////////////
 
 //     //------------------  FIM DA INICIALIZAÇÃO DA TABELA DE OUTPUTS  ------------------//
 end
@@ -551,8 +673,10 @@ always @(posedge clk) begin
                             case (FUNCT)
                                 ADD:
                                     STATE = STATE_ADD0;
+                               
                                 AND:
                                     STATE = STATE_AND_0;
+                               
                                 SUB:
                                     STATE = STATE_SUB_0;
 
@@ -567,6 +691,22 @@ always @(posedge clk) begin
                                 
                                 BREAK:
                                     STATE = STATE_BREAK;
+                                
+                                SLL:
+                                    STATE = STATE_SLL_SRA_SRL_INITIAL;
+                               
+                                SRA:
+                                    STATE = STATE_SLL_SRA_SRL_INITIAL;
+                              
+                                SRL:
+                                    STATE = STATE_SLL_SRA_SRL_INITIAL;
+                               
+                                SLLV:
+                                    STATE = STATE_SLLV_SRAV_INITIAL;
+
+                                SRAV:
+                                    STATE = STATE_SLLV_SRAV_INITIAL;
+                            
                                 default:
                                     STATE = STATE_FETCH0; // esse será dps o default para tratamento de exceções
                             endcase
@@ -698,6 +838,72 @@ always @(posedge clk) begin
 
             // JR, BREAK, BRANCHES ENDING STATE
             STATE_JR_BREAK_BRANCH_ENDING: begin
+                STATE = STATE_FETCH0;
+                COUNTER = 0;
+            end
+
+            
+            // SLL, SRA, SRL INITIAL STATE
+            STATE_SLL_SRA_SRL_INITIAL: begin
+                if (FUNCT == SLL) begin
+                    STATE = STATE_SLL;
+                    COUNTER = 0;
+                end
+                else if (FUNCT == SRA) begin
+                    STATE = STATE_SRA;
+                    COUNTER = 0;
+                end 
+                else if (FUNCT == SRL) begin
+                    STATE = STATE_SRL;
+                    COUNTER = 0;
+                end 
+            end
+
+            //  SLL
+            STATE_SLL: begin
+                STATE = STATE_SHIFT_END;
+                COUNTER = 0;
+            end
+            
+            //  SRA
+            STATE_SRA: begin
+                STATE = STATE_SHIFT_END;
+                COUNTER = 0;
+            end
+           
+            //  SRL
+            STATE_SRL: begin
+                STATE = STATE_SHIFT_END;
+                COUNTER = 0;
+            end
+            
+
+            // SLLV, SRAV INITIAL STATE
+            STATE_SLLV_SRAV_INITIAL: begin
+                if (FUNCT == SLLV) begin
+                    STATE = STATE_SLLV;
+                    COUNTER = 0;
+                end
+                else if (FUNCT == SRAV) begin
+                    STATE = STATE_SRAV;
+                    COUNTER = 0;
+                end 
+            end
+            
+            //  SLLV
+            STATE_SLLV: begin
+                STATE = STATE_SHIFT_END;
+                COUNTER = 0;
+            end
+            
+            //  SRAV
+            STATE_SRAV: begin
+                STATE = STATE_SHIFT_END;
+                COUNTER = 0;
+            end 
+
+            // SHIFT END STATE
+            STATE_SHIFT_END: begin
                 STATE = STATE_FETCH0;
                 COUNTER = 0;
             end

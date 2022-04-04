@@ -69,11 +69,11 @@ Essas são as instruções que conseguimos fazer:
 - [x] add rd, rs, rt
 - [x] and rd, rs, rt
 - [x] sub rd, rs, rt
-- [] sll rd, rt, shamt
-- [] sra rd, rt, shamt
-- [] srl rd, rt, shamt 
-- [] sllv rd, rs, rt
-- [] srav rd, rs, rt
+- [X] sll rd, rt, shamt
+- [X] sra rd, rt, shamt
+- [X] srl rd, rt, shamt 
+- [X] sllv rd, rs, rt
+- [X] srav rd, rs, rt
 - [] slt rd, rs, rt
 - [x] jr rs
 - [x] break 
