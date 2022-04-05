@@ -102,6 +102,7 @@ module control_unit(
     parameter STATE_ON                  = 7'b1111111;
     //  COMUNS
     parameter STATE_RESET               =   7'd0;
+    parameter STATE_RESET1              =   7'd50;
     parameter STATE_FETCH0              =   7'd1;
     parameter STATE_FETCH1              =   7'd2;
     parameter STATE_DECODE0             =   7'd3;
@@ -217,6 +218,9 @@ module control_unit(
     parameter STATE_SLLM_1                  = 7'd48;
     parameter STATE_SLLM_ENDING             = 7'd49;
 
+    // CUIDADOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO!!!! O ESTADO 7'd50 SERÁ O STATE_RESET1, QUE PRECISA SER ADICIONADO PARA CARREGAR O VALOR 227 NO REGISTRADOR 29  //
+
+
     //---------------------------FIM ESTADOS--------------------------//
 
 
@@ -286,6 +290,19 @@ initial begin
      STATE_OUTPUT_TABLE[STATE_RESET][19:17] = 3'd4;   // MemToReg = 4         /19:17
      STATE_OUTPUT_TABLE[STATE_RESET][0] = 1;         // reset_out = 1        /0
 //     ///////////////   RESET   /////////////
+
+//     ///////////////   RESET1   /////////////
+//     // RegWrite =1          /34
+//     // RegDst = 3           /21:20
+//     // MemToReg = 4         /19:17
+//     // reset_out = 0        /0
+     STATE_OUTPUT_TABLE[STATE_RESET1] = 43'd0;
+
+     STATE_OUTPUT_TABLE[STATE_RESET1][34] = 1;        // RegWrite =1          /34
+     STATE_OUTPUT_TABLE[STATE_RESET1][21:20] = 2'd3;   // RegDst = 3           /21:20
+     STATE_OUTPUT_TABLE[STATE_RESET1][19:17] = 3'd4;   // MemToReg = 4         /19:17
+     STATE_OUTPUT_TABLE[STATE_RESET1][0] = 0;         // reset_out = 0        /0
+//     ///////////////   RESET1   /////////////
 
 //      ///////////////  STATE_FETCH0   ///////////
 //      // PCwrite = 0
@@ -870,6 +887,10 @@ always @(posedge clk) begin
         case (STATE)
             //------        ESTADOS "COMUNS"      --------//
             STATE_RESET: begin
+                STATE = STATE_RESET1;
+            end
+
+            STATE_RESET1: begin
                 STATE = STATE_FETCH0;
             end
 
