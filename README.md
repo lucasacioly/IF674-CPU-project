@@ -86,7 +86,7 @@ Essas são as instruções que conseguimos fazer:
 
 ### Instruções do tipo I
 
-- [] addi rt, rs, imediato
+- [X] addi rt, rs, imediato
 - [x] addiu rt, rs, imediato
 - [X] beq rs, rt, offset
 - [X] bne rs, rt, offset 

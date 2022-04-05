@@ -983,6 +983,9 @@ always @(posedge clk) begin
                             endcase
                         end
 
+                        ADDI:
+                            STATE = STATE_ADDI_ADDIU_0;
+
                         ADDIU:
                             STATE = STATE_ADDI_ADDIU_0;
 
