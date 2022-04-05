@@ -220,6 +220,12 @@ module control_unit(
 
     // CUIDADOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO!!!! O ESTADO 7'd50 SERÁ O STATE_RESET1, QUE PRECISA SER ADICIONADO PARA CARREGAR O VALOR 227 NO REGISTRADOR 29  //
 
+    // ADDM
+    parameter STATE_ADDM0                   = 7'd51;
+    parameter STATE_ADDM1                   = 7'd52;
+    parameter STATE_ADDM2                   = 7'd53;
+    parameter STATE_ADDM3                   = 7'd54;
+    parameter STATE_ADDM4                   = 7'd55;
 
     //---------------------------FIM ESTADOS--------------------------//
 
@@ -861,6 +867,57 @@ initial begin
 //      ///////////////  STATE_SLLM_ENDING  ////////////////
 
 
+//      ///////////////  STATE_ADDM0  ////////////////
+//      // IorD = 3         /27:25
+        STATE_OUTPUT_TABLE[STATE_ADDM0] = 43'd0;
+
+        STATE_OUTPUT_TABLE[STATE_ADDM0][27:25] = 3'd3;
+//      ///////////////  STATE_ADDM0  ////////////////
+
+//      ///////////////  STATE_ADDM1  ////////////////
+//      // MDRwrite = 1     /6
+        STATE_OUTPUT_TABLE[STATE_ADDM1] = 43'd0;
+        
+        STATE_OUTPUT_TABLE[STATE_ADDM1][6] = 1;
+//      ///////////////  STATE_ADDM1  ////////////////
+
+//      ///////////////  STATE_ADDM2  ////////////////
+//      // ALUop = 1        /42:40
+//      // IorD = 2         /27:25
+//      // ALUsrcA = 1      /16:15
+//      // ALUsrcB = 2      /14:12
+        STATE_OUTPUT_TABLE[STATE_ADDM2] = 43'd0;
+        
+        STATE_OUTPUT_TABLE[STATE_ADDM2][42:40] = 3'd1;
+        STATE_OUTPUT_TABLE[STATE_ADDM2][27:25] = 3'd2;
+        STATE_OUTPUT_TABLE[STATE_ADDM2][16:15] = 2'd1;
+        STATE_OUTPUT_TABLE[STATE_ADDM2][14:12] = 3'd2;
+//      ///////////////  STATE_ADDM2  ////////////////
+
+//      ///////////////  STATE_ADDM3  ////////////////
+//      // ALUop = 1        /42:40
+//      // ALUsrcA = 1      /16:15
+//      // ALUsrcB = 2      /14:12
+//      // ALUoutCtrl = 1   /1
+        STATE_OUTPUT_TABLE[STATE_ADDM3] = 43'd0;
+        
+        STATE_OUTPUT_TABLE[STATE_ADDM3][42:40] = 3'd1;
+        STATE_OUTPUT_TABLE[STATE_ADDM3][16:15] = 2'd1;
+        STATE_OUTPUT_TABLE[STATE_ADDM3][14:12] = 3'd2;
+        STATE_OUTPUT_TABLE[STATE_ADDM3][1]     = 1;
+//      ///////////////  STATE_ADDM3  ////////////////
+
+//      ///////////////  STATE_ADDM4  ////////////////
+//      // RegWrite = 1      /34
+//      // RegDst = 1        /21:20
+//      // MemToReg = 6      /19:17
+        STATE_OUTPUT_TABLE[STATE_ADDM4] = 43'd0;
+        
+        STATE_OUTPUT_TABLE[STATE_ADDM4][34] = 1;
+        STATE_OUTPUT_TABLE[STATE_ADDM4][21:20] = 2'd1;
+        STATE_OUTPUT_TABLE[STATE_ADDM4][19:17] = 3'd6;
+//      ///////////////  STATE_ADDM4  ////////////////
+
 //     //------------------  FIM DA INICIALIZAÇÃO DA TABELA DE OUTPUTS  ------------------//
 end
 
@@ -977,7 +1034,10 @@ always @(posedge clk) begin
                                 
                                 RTE: 
                                     STATE = STATE_RTE;
-                            
+
+                                ADDM:
+                                    STATE = STATE_ADDM0;
+
                                 default:
                                     STATE = STATE_FETCH0; // esse será dps o default para tratamento de exceções 
                             endcase
@@ -1344,6 +1404,37 @@ always @(posedge clk) begin
             end
             //STATE_SLLM_ENDING
             STATE_SLLM_ENDING: begin
+                STATE = STATE_FETCH0;
+            end
+
+            //STATE_ADDM0
+            STATE_ADDM0: begin
+                if (COUNTER < 3) begin
+                    COUNTER = COUNTER + 1;
+                end else begin
+                    COUNTER = 0;
+                    STATE = STATE_ADDM1;
+                end
+            end
+            //STATE_ADDM1
+            STATE_ADDM1: begin
+                STATE = STATE_ADDM2;
+            end
+            //STATE_ADDM2
+            STATE_ADDM2: begin
+                if (COUNTER < 3) begin
+                    COUNTER = COUNTER + 1;
+                end else begin
+                    COUNTER = 0;
+                    STATE = STATE_ADDM3;
+                end
+            end
+            //STATE_ADDM3
+            STATE_ADDM3: begin
+                STATE = STATE_ADDM4;
+            end
+            //STATE_ADDM4
+            STATE_ADDM4: begin
                 STATE = STATE_FETCH0;
             end
 
