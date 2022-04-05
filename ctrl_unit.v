@@ -1080,11 +1080,11 @@ always @(posedge clk) begin
             
             // BEQ/BNE
             STATE_BEQ_BNE: begin
-                if (OPCODE == BEQ && Z == 1) begin
+                if (OPCODE == BEQ && ZERO == 1) begin
                     STATE = STATE_JR_BREAK_BRANCH_ENDING;
                     COUNTER = 0; 
                 end
-                else if (OPCODE == BNE && Z == 0) begin
+                else if (OPCODE == BNE && ZERO == 0) begin
                     STATE = STATE_JR_BREAK_BRANCH_ENDING;
                     COUNTER = 0;
                 end
@@ -1231,7 +1231,7 @@ always @(posedge clk) begin
             //STATE_LOAD_STORES_2
             STATE_LOAD_STORES_2: begin
                 if (COUNTER == 0 || COUNTER == 1) begin
-                    STATE_LOAD_STORES_2;
+                    STATE = STATE_LOAD_STORES_2;
                     COUNTER = COUNTER + 1;
                 end
                 else if (COUNTER == 2) begin
