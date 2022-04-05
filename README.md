@@ -95,7 +95,7 @@ Essas são as instruções que conseguimos fazer:
 - [x] lb rt, offset(rs) 
 - [x] lh rt, offset(rs)
 - [x] lw rt, offset(rs)
-- [] lui rt, imediato
+- [x] lui rt, imediato
 - [x] sb rt, offset(rs)
 - [x] sh rt, offset(rs)
 - [x] sw rt, offset(rs)
@@ -105,9 +105,9 @@ Essas são as instruções que conseguimos fazer:
 ### Instruções do tipo J
 
 - [x] j offset
-- [] jal offset
+- [x] jal offset
 
 ### Exceção
-- [] Overflow
+- [x] Overflow
 - [] div by 0
-- [] opcode inexistente
+- [x] opcode inexistente

@@ -227,6 +227,25 @@ module control_unit(
     parameter STATE_ADDM3                   = 7'd54;
     parameter STATE_ADDM4                   = 7'd55;
 
+
+    // LUI
+    parameter STATE_LUI                     = 7'd56;     
+
+    // JAL
+    parameter STATE_JAL_0                   = 7'd57;
+    parameter STATE_JAL_1                   = 7'd58;
+    parameter STATE_JAL_2                   = 7'd59;
+
+
+    // TRATAMENTO DE EXCEÇÕES  
+    parameter STATE_EXP_OVERFLOW            = 7'd60;
+    parameter STATE_EXP_DIV0                = 7'd61;
+    parameter STATE_EXP_OPCODE              = 7'd62;
+
+    parameter STATE_EXP_END_0               = 7'd63;
+    parameter STATE_EXP_END_1               = 7'd64;
+
+
     //---------------------------FIM ESTADOS--------------------------//
 
 
@@ -867,6 +886,7 @@ initial begin
 //      ///////////////  STATE_SLLM_ENDING  ////////////////
 
 
+
 //      ///////////////  STATE_ADDM0  ////////////////
 //      // IorD = 3         /27:25
         STATE_OUTPUT_TABLE[STATE_ADDM0] = 43'd0;
@@ -917,6 +937,124 @@ initial begin
         STATE_OUTPUT_TABLE[STATE_ADDM4][21:20] = 2'd1;
         STATE_OUTPUT_TABLE[STATE_ADDM4][19:17] = 3'd6;
 //      ///////////////  STATE_ADDM4  ////////////////
+
+
+
+//      ///////////////  STATE_LUI  ////////////////
+//      // RegDst = 0       /21:20   
+//      // MemToReg = 3     /19:17
+//      // RegWrite = 1     /34
+      STATE_OUTPUT_TABLE[STATE_LUI] = 43'd0;
+       
+      STATE_OUTPUT_TABLE[STATE_LUI][21:20] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_LUI][19:17] = 3'd3;
+      STATE_OUTPUT_TABLE[STATE_LUI][34] = 1;
+//      ///////////////  STATE_LUI  ////////////////
+
+
+
+//      ///////////////  STATE_JAL_0  ////////////////
+//      // ALUSrcA = 0      /16:15
+//      // PCSrc = 2        /11:9      
+//      // ALUop =  0       /42:40     
+      STATE_OUTPUT_TABLE[STATE_JAL_0] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_JAL_0][16:15] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_JAL_0][11:9] = 3'd2;
+      STATE_OUTPUT_TABLE[STATE_JAL_0][42:40] = 3'd0;
+//      ///////////////  STATE_JAL_0  ////////////////
+
+//      ///////////////  STATE_JAL_1  ////////////////
+//      // ALUSrcA = 0      /16:15
+//      // PCSrc = 2        /11:9      
+//      // ALUop =  0       /42:40    
+//      // ALUoutCtrl = 1   /1 
+//      // RegDst = 2       /21:20   
+//      // MemToReg = 6     /19:17
+//      // PCwrite = 1      /8
+      STATE_OUTPUT_TABLE[STATE_JAL_1] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_JAL_1][16:15] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_JAL_1][11:9] = 3'd2;
+      STATE_OUTPUT_TABLE[STATE_JAL_1][42:40] = 3'd0;
+      STATE_OUTPUT_TABLE[STATE_JAL_1][1]     = 1;
+      STATE_OUTPUT_TABLE[STATE_JAL_1][21:20] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_JAL_1][19:17] = 3'd6;
+      STATE_OUTPUT_TABLE[STATE_JAL_1][8] = 1;
+//      ///////////////  STATE_JAL_1  ////////////////
+
+//      ///////////////  STATE_JAL_2  //////////////// 
+//      // RegDst = 2       /21:20   
+//      // MemToReg = 6     /19:17
+//      // RegWrite = 1     /34
+      STATE_OUTPUT_TABLE[STATE_JAL_2] = 43'd0;
+      
+      STATE_OUTPUT_TABLE[STATE_JAL_1][21:20] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_JAL_1][19:17] = 3'd6;
+      STATE_OUTPUT_TABLE[STATE_JAL_2][34] = 1;
+//      ///////////////  STATE_JAL_2  ////////////////
+
+
+
+//      ///////////////  STATE_EXP_OVERFLOW  ////////////////
+//      // MEMwrite = 0             /38
+//      // ALUSrcA = 0              /16:15
+//      // EXCPControl = 1          /29:28
+//      // IorD = 5                 /27:25
+//      // ALUop = 0                /42:40 
+//      // EPCcontrol = 1           /2
+        STATE_OUTPUT_TABLE[STATE_EXP_OVERFLOW] = 43'd0;        
+
+        STATE_OUTPUT_TABLE[STATE_EXP_OVERFLOW][29:28] = 2'd1;
+        STATE_OUTPUT_TABLE[STATE_EXP_OVERFLOW][27:25] = 3'd5;
+        STATE_OUTPUT_TABLE[STATE_EXP_OVERFLOW][2] = 1
+//      ///////////////  STATE_EXP_OVERFLOW  //////////////// 
+
+//      ///////////////  STATE_EXP_DIV0  //////////////// 
+//      // MEMwrite = 0             /38
+//      // ALUSrcA = 0              /16:15
+//      // EXCPControl = 2          /29:28
+//      // IorD = 5                 /27:25
+//      // ALUop = 0                /42:40 
+//      // EPCcontrol = 1           /2
+        STATE_OUTPUT_TABLE[STATE_EXP_DIV0] = 43'd0;        
+
+        STATE_OUTPUT_TABLE[STATE_EXP_DIV0][29:28] = 2'd2;
+        STATE_OUTPUT_TABLE[STATE_EXP_DIV0][27:25] = 3'd5;
+        STATE_OUTPUT_TABLE[STATE_EXP_DIV0][2] = 1
+//      ///////////////  STATE_EXP_DIV0  ////////////////
+
+//      ///////////////  STATE_EXP_OPCODE  //////////////// 
+//      // MEMwrite = 0             /38
+//      // ALUSrcA = 0              /16:15
+//      // EXCPControl = 0          /29:28
+//      // IorD = 5                 /27:25
+//      // ALUop = 0                /42:40 
+//      // EPCcontrol = 1           /2
+        STATE_OUTPUT_TABLE[STATE_EXP_OPCODE] = 43'd0;        
+
+        STATE_OUTPUT_TABLE[STATE_EXP_OPCODE][29:28] = 2'd0;
+        STATE_OUTPUT_TABLE[STATE_EXP_OPCODE][27:25] = 3'd5;
+        STATE_OUTPUT_TABLE[STATE_EXP_OPCODE][2] = 1
+//      ///////////////  STATE_EXP_OPCODE  ////////////////
+
+//      ///////////////  STATE_EXP_END_0  //////////////// 
+//      // MDRwrite = 1    /6
+      STATE_OUTPUT_TABLE[STATE_EXP_END_0] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_EXP_END_0][6] = 1;
+//      ///////////////  STATE_EXP_END_0  ////////////////
+
+//      ///////////////  STATE_EXP_END_1  //////////////// 
+//      // LMcontrol = 3       /31:30
+//      // PCSrc = 1           /11:9
+//      // PCwrite = 1         /8
+      STATE_OUTPUT_TABLE[STATE_EXP_END_1] = 43'd0;
+
+      STATE_OUTPUT_TABLE[STATE_EXP_END_1][31:30] = 2'd3;
+      STATE_OUTPUT_TABLE[STATE_JUMP][11:9] = 3'd1;
+      STATE_OUTPUT_TABLE[STATE_JUMP][8] = 1;
+//      ///////////////  STATE_EXP_END_1  ////////////////
 
 //     //------------------  FIM DA INICIALIZAÇÃO DA TABELA DE OUTPUTS  ------------------//
 end
@@ -1039,7 +1177,7 @@ always @(posedge clk) begin
                                     STATE = STATE_ADDM0;
 
                                 default:
-                                    STATE = STATE_FETCH0; // esse será dps o default para tratamento de exceções 
+                                    STATE = STATE_EXP_OPCODE; // tratamento de exceções de OPCODE INEXISTENTE 
                             endcase
                         end
 
@@ -1071,18 +1209,25 @@ always @(posedge clk) begin
                             STATE = STATE_LOAD_STORES_0;
                         SB:
                             STATE = STATE_LOAD_STORES_0;
+
                         LW:
                             STATE = STATE_LOAD_STORES_0;
                         LH:
                             STATE = STATE_LOAD_STORES_0;
                         LB:
                             STATE = STATE_LOAD_STORES_0;
+
                         SLLM:
                             STATE = STATE_LOAD_STORES_0;
 
+                        LUI:
+                            STATE = STATE_LUI;
+
+                        JAL:
+                            STATE = STATE_JAL_0;
 
                         default:
-                            STATE = STATE_FETCH0; // esse será dps o default para tratamento de exceções de OPCODE INEXISTENTE
+                            STATE = STATE_EXP_OPCODE; // tratamento de exceções de OPCODE INEXISTENTE
                     endcase
                 end
             end
@@ -1090,8 +1235,12 @@ always @(posedge clk) begin
 
             //  ADD
             STATE_ADD0: begin
-                STATE = STATE_ADD1;
-                COUNTER = 0;
+                if (OVERFLOW) begin
+                    STATE = STATE_EXP_OVERFLOW;
+                end else begin
+                    STATE = STATE_ADD1;
+                    COUNTER = 0;
+                end
             end
             STATE_ADD1: begin
                 STATE = STATE_ADD_AND_SUB_ENDING;
@@ -1110,8 +1259,12 @@ always @(posedge clk) begin
 
             //  SUB
             STATE_SUB_0: begin
-                STATE = STATE_SUB_1;
-                COUNTER = 0;
+                if (OVERFLOW) begin
+                    STATE = STATE_EXP_OVERFLOW;
+                end else begin
+                    STATE = STATE_SUB_1;
+                    COUNTER = 0;
+                end
             end
             STATE_SUB_1: begin
                 STATE = STATE_ADD_AND_SUB_ENDING;
@@ -1126,8 +1279,12 @@ always @(posedge clk) begin
             
             // ADDIU, ADDI
             STATE_ADDI_ADDIU_0: begin
-                STATE = STATE_ADDI_ADDIU_1; // ESTE ESTADO CONTARÁ COM UMA CHECAGEM DE OVERFLOW APENAS SE A INSTRUÇÃO EM QUESTÃO FOR O ADDI, MAS PRIMEIRO SERÁ IMPLEMENTADO O ADDIU
-                COUNTER = 0;
+                if (OPCODE == ADDIU && OVERFLOW) begin
+                    STATE = STATE_EXP_OVERFLOW;
+                end else begin
+                    STATE = STATE_ADDI_ADDIU_1; // ESTE ESTADO CONTARÁ COM UMA CHECAGEM DE OVERFLOW APENAS SE A INSTRUÇÃO EM QUESTÃO FOR O ADDI, MAS PRIMEIRO SERÁ IMPLEMENTADO O ADDIU
+                    COUNTER = 0;
+                end
             end
             STATE_ADDI_ADDIU_1: begin
                 STATE = STATE_ADDI_ADDIU_ENDING;
@@ -1409,11 +1566,15 @@ always @(posedge clk) begin
 
             //STATE_ADDM0
             STATE_ADDM0: begin
-                if (COUNTER < 3) begin
+                if (COUNTER < 2) begin
                     COUNTER = COUNTER + 1;
                 end else begin
-                    COUNTER = 0;
-                    STATE = STATE_ADDM1;
+                    if (OVERFLOW) begin
+                        STATE = STATE_EXP_OVERFLOW;
+                    end else begin
+                        COUNTER = 0;
+                        STATE = STATE_ADDM1;
+                    end
                 end
             end
             //STATE_ADDM1
@@ -1422,7 +1583,7 @@ always @(posedge clk) begin
             end
             //STATE_ADDM2
             STATE_ADDM2: begin
-                if (COUNTER < 3) begin
+                if (COUNTER < 2) begin
                     COUNTER = COUNTER + 1;
                 end else begin
                     COUNTER = 0;
@@ -1437,6 +1598,70 @@ always @(posedge clk) begin
             STATE_ADDM4: begin
                 STATE = STATE_FETCH0;
             end
+
+            // LUI
+            STATE_LUI: begin
+                STATE = STATE_FETCH0;
+            end
+
+            // JAL
+            STATE_JAL_0: begin
+                STATE = STATE_JAL_1;
+                COUNTER = 0;
+            end
+            STATE_JAL_1: begin
+                STATE = STATE_JAL_2;
+            end
+            STATE_JAL_2: begin
+                STATE = STATE_FETCH0;
+            end
+
+
+            //-------------- TRATAMENTO DE EXCEÇÕES ------------------//
+            
+            // OVERFLOW
+            STATE_EXP_OVERFLOW: begin
+                if (COUNTER < 2) begin
+                    COUNTER = COUNTER + 1;
+                end
+                else begin
+                    COUNTER = 0;
+                    STATE = STATE_EXP_END_0;
+                end                
+            end
+
+            // DIVISÃO POR ZERO
+            STATE_EXP_DIV0: begin
+                if (COUNTER < 2) begin
+                    COUNTER = COUNTER + 1;
+                end
+                else begin
+                    COUNTER = 0;
+                    STATE = STATE_EXP_END_0;
+                end 
+            end
+
+            // OPCODE INEXISTENTE
+            STATE_EXP_OPCODE: begin
+                if (COUNTER < 2) begin
+                    COUNTER = COUNTER + 1;
+                end
+                else begin
+                    COUNTER = 0;
+                    STATE = STATE_EXP_END_0;
+                end 
+            end
+
+            // FINAIZAÇÃO DO TRATAMENTO 0
+            STATE_EXP_END_0: begin
+                STATE = STATE_EXP_END_1;
+            end
+
+            // FINAIZAÇÃO DO TRATAMENTO 1
+            STATE_EXP_END_1: begin
+                STATE =STATE_FETCH0;
+            end
+            
 
             default: begin
                 STATE = STATE_RESET;
