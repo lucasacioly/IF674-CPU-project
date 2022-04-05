@@ -82,7 +82,7 @@ Essas são as instruções que conseguimos fazer:
 - [] mult rs, rt
 - [x] mfhi rd
 - [x] mflo rd
-- [] addm rs, rt, rd
+- [x] addm rs, rt, rd
 
 ### Instruções do tipo I
 
