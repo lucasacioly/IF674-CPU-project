@@ -533,12 +533,14 @@ initial begin
 //      ///////////////  STATE_JR  ////////////////
 //      // ALUSrcA = 2      /16:15
 //      // PCSrc = 2        /11:9      
-//      // ALUop =  0       /42:40     
+//      // ALUop =  0       /42:40
+//      // ALUoutCtrl = 1   /1      
       STATE_OUTPUT_TABLE[STATE_JR] = 43'd0;
       
       STATE_OUTPUT_TABLE[STATE_JR][16:15] = 2'd2;
       STATE_OUTPUT_TABLE[STATE_JR][11:9] = 3'd2;
       STATE_OUTPUT_TABLE[STATE_JR][42:40] = 3'd0;
+      STATE_OUTPUT_TABLE[STATE_JR][1] = 1;
 //      ///////////////  STATE_JR  ////////////////
 
 //      ///////////////  STATE_BEQ_BNE  ////////////////
@@ -571,13 +573,15 @@ initial begin
 //      // ALUSrcA = 0      /16:15
 //      // ALUSrcB = 1      /14:12
 //      // ALUop =  2       /42:40
-//      // PCSrc = 2        /11:9           
+//      // PCSrc = 2        /11:9 
+//      // ALUoutCtrl = 1   /1           
       STATE_OUTPUT_TABLE[STATE_BREAK] = 43'd0;
       
       STATE_OUTPUT_TABLE[STATE_BREAK][16:15] = 2'd0;
       STATE_OUTPUT_TABLE[STATE_BREAK][14:12] = 3'd1;
       STATE_OUTPUT_TABLE[STATE_BREAK][42:40] = 3'd2;
       STATE_OUTPUT_TABLE[STATE_BREAK][11:9] = 3'd2;
+      STATE_OUTPUT_TABLE[STATE_BREAK][1] = 1;      
 //      ///////////////  STATE_BREAK  ////////////////
 
 //      ///////////////  STATE_JR_BREAK_BRANCH_ENDING  ////////////////
@@ -1309,14 +1313,22 @@ always @(posedge clk) begin
             
             //  JR
             STATE_JR: begin
-                STATE = STATE_JR_BREAK_BRANCH_ENDING;
-                COUNTER = 0;
+                if (COUNTER == 0) begin
+                    COUNTER = COUNTER + 1;
+                end else begin
+                    STATE = STATE_JR_BREAK_BRANCH_ENDING;
+                    COUNTER = 0;
+                end    
             end
             
             // BREAK
             STATE_BREAK: begin
-                STATE = STATE_JR_BREAK_BRANCH_ENDING;
-                COUNTER = 0;
+                if (COUNTER == 0)
+                    COUNTER = COUNTER + 1;
+                end else begin
+                    STATE = STATE_JR_BREAK_BRANCH_ENDING;
+                    COUNTER = 0;
+                end
             end
             
             // BEQ/BNE
