@@ -1007,7 +1007,7 @@ initial begin
 
         STATE_OUTPUT_TABLE[STATE_EXP_OVERFLOW][29:28] = 2'd1;
         STATE_OUTPUT_TABLE[STATE_EXP_OVERFLOW][27:25] = 3'd5;
-        STATE_OUTPUT_TABLE[STATE_EXP_OVERFLOW][2] = 1
+        STATE_OUTPUT_TABLE[STATE_EXP_OVERFLOW][2] = 1;
 //      ///////////////  STATE_EXP_OVERFLOW  //////////////// 
 
 //      ///////////////  STATE_EXP_DIV0  //////////////// 
@@ -1021,7 +1021,7 @@ initial begin
 
         STATE_OUTPUT_TABLE[STATE_EXP_DIV0][29:28] = 2'd2;
         STATE_OUTPUT_TABLE[STATE_EXP_DIV0][27:25] = 3'd5;
-        STATE_OUTPUT_TABLE[STATE_EXP_DIV0][2] = 1
+        STATE_OUTPUT_TABLE[STATE_EXP_DIV0][2] = 1;
 //      ///////////////  STATE_EXP_DIV0  ////////////////
 
 //      ///////////////  STATE_EXP_OPCODE  //////////////// 
@@ -1035,7 +1035,7 @@ initial begin
 
         STATE_OUTPUT_TABLE[STATE_EXP_OPCODE][29:28] = 2'd0;
         STATE_OUTPUT_TABLE[STATE_EXP_OPCODE][27:25] = 3'd5;
-        STATE_OUTPUT_TABLE[STATE_EXP_OPCODE][2] = 1
+        STATE_OUTPUT_TABLE[STATE_EXP_OPCODE][2] = 1;
 //      ///////////////  STATE_EXP_OPCODE  ////////////////
 
 //      ///////////////  STATE_EXP_END_0  //////////////// 
@@ -1235,7 +1235,7 @@ always @(posedge clk) begin
 
             //  ADD
             STATE_ADD0: begin
-                if (OVERFLOW) begin
+                if (O == 1) begin
                     STATE = STATE_EXP_OVERFLOW;
                 end else begin
                     STATE = STATE_ADD1;
@@ -1259,7 +1259,7 @@ always @(posedge clk) begin
 
             //  SUB
             STATE_SUB_0: begin
-                if (OVERFLOW) begin
+                if (O == 1) begin
                     STATE = STATE_EXP_OVERFLOW;
                 end else begin
                     STATE = STATE_SUB_1;
@@ -1279,7 +1279,7 @@ always @(posedge clk) begin
             
             // ADDIU, ADDI
             STATE_ADDI_ADDIU_0: begin
-                if (OPCODE == ADDIU && OVERFLOW) begin
+                if (OPCODE == ADDIU && O == 1) begin
                     STATE = STATE_EXP_OVERFLOW;
                 end else begin
                     STATE = STATE_ADDI_ADDIU_1; // ESTE ESTADO CONTARÁ COM UMA CHECAGEM DE OVERFLOW APENAS SE A INSTRUÇÃO EM QUESTÃO FOR O ADDI, MAS PRIMEIRO SERÁ IMPLEMENTADO O ADDIU
@@ -1569,7 +1569,7 @@ always @(posedge clk) begin
                 if (COUNTER < 2) begin
                     COUNTER = COUNTER + 1;
                 end else begin
-                    if (OVERFLOW) begin
+                    if (O == 1) begin
                         STATE = STATE_EXP_OVERFLOW;
                     end else begin
                         COUNTER = 0;

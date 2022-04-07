@@ -44,6 +44,7 @@ assign sum = A + M;
 assign difference = A + ~M + 1;
 assign hi = A;
 assign lo = Q;
+assign prod = {A, Q};
 assign busy = (count < 32);
 
 endmodule
