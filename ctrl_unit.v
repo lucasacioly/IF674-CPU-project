@@ -210,10 +210,6 @@ module control_unit(
     parameter STATE_LH                      = 7'd43;
     parameter STATE_LB                      = 7'd44;
  
-    parameter STATE_STORES_ENDING           = 7'd45;
-
-    parameter STATE_LOADS_ENDING             = 7'd46;
-
     parameter STATE_SLLM_0                  = 7'd47;
     parameter STATE_SLLM_1                  = 7'd48;
     parameter STATE_SLLM_ENDING             = 7'd49;
@@ -798,67 +794,76 @@ initial begin
 
 //      ///////////////  STATE_SW  ////////////////
 //      // SMcontrol = 0    /33:32
+//      // iorD = 4         /27:25
+//      // MEMwrite = 1     /38
       STATE_OUTPUT_TABLE[STATE_SW] = 44'd0;
 
       STATE_OUTPUT_TABLE[STATE_SW][33:32] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_SW][27:25] = 3'd4;
+      STATE_OUTPUT_TABLE[STATE_SW][38] = 1;
 //      ///////////////  STATE_SW  ////////////////
 
 //      ///////////////  STATE_SH  ////////////////
 //      // SMcontrol = 1    /33:32
+//      // iorD = 4         /27:25
+//      // MEMwrite = 1     /38
       STATE_OUTPUT_TABLE[STATE_SH] = 44'd0;
 
       STATE_OUTPUT_TABLE[STATE_SH][33:32] = 2'd1;
+      STATE_OUTPUT_TABLE[STATE_SH][27:25] = 3'd4;
+      STATE_OUTPUT_TABLE[STATE_SH][38] = 1;
 //      ///////////////  STATE_SH  ////////////////
 
 //      ///////////////  STATE_SB  ////////////////
 //      // SMcontrol = 2    /33:32
+//      // iorD = 4         /27:25
+//      // MEMwrite = 1     /38
       STATE_OUTPUT_TABLE[STATE_SB] = 44'd0;
 
       STATE_OUTPUT_TABLE[STATE_SB][33:32] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_SB][27:25] = 3'd4;
+      STATE_OUTPUT_TABLE[STATE_SB][38] = 1;
 //      ///////////////  STATE_SB  ////////////////
 
 
 //      ///////////////  STATE_LW  ////////////////
 //      // LMcontrol = 0    /31:30
+//      // RegDst = 0       /21:20   
+//      // MemToReg = 0     /19:17
+//      // RegWrite = 1     /34
       STATE_OUTPUT_TABLE[STATE_LW] = 44'd0;
 
       STATE_OUTPUT_TABLE[STATE_LW][31:30] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_LW][21:20] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_LW][19:17] = 3'd0;
+      STATE_OUTPUT_TABLE[STATE_LW][34] = 1;
 //      ///////////////  STATE_LW  ////////////////
 
 //      ///////////////  STATE_LH  ////////////////
 //      // LMcontrol = 1    /31:30
+//      // RegDst = 0       /21:20   
+//      // MemToReg = 0     /19:17
+//      // RegWrite = 1     /34
       STATE_OUTPUT_TABLE[STATE_LH] = 44'd0;
 
       STATE_OUTPUT_TABLE[STATE_LH][31:30] = 2'd1;
+      STATE_OUTPUT_TABLE[STATE_LH][21:20] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_LH][19:17] = 3'd0;
+      STATE_OUTPUT_TABLE[STATE_LH][34] = 1;
 //      ///////////////  STATE_LH  ////////////////
 
 //      ///////////////  STATE_LB  ////////////////
 //      // LMcontrol = 2    /31:30
-      STATE_OUTPUT_TABLE[STATE_LB] = 44'd0;
-
-      STATE_OUTPUT_TABLE[STATE_LB][31:30] = 2'd2;
-//      ///////////////  STATE_LB  ////////////////
-
-
-//      ///////////////  STATE_STORES_ENDING  ////////////////
-//      // iorD = 4         /27:25
-//      // MEMwrite = 1     /38
-      STATE_OUTPUT_TABLE[STATE_STORES_ENDING] = 44'd0;
-
-      STATE_OUTPUT_TABLE[STATE_STORES_ENDING][27:25] = 3'd4;
-      STATE_OUTPUT_TABLE[STATE_STORES_ENDING][38] = 1;
-//      ///////////////  STATE_STORES_ENDING  ////////////////
-
-//      ///////////////  STATE_LOADS_ENDING  ////////////////
 //      // RegDst = 0       /21:20   
 //      // MemToReg = 0     /19:17
 //      // RegWrite = 1     /34
-      STATE_OUTPUT_TABLE[STATE_LOADS_ENDING] = 44'd0;
-       
-      STATE_OUTPUT_TABLE[STATE_LOADS_ENDING][21:20] = 2'd0;
-      STATE_OUTPUT_TABLE[STATE_LOADS_ENDING][19:17] = 3'd0;
-      STATE_OUTPUT_TABLE[STATE_LOADS_ENDING][34] = 1;
-//      ///////////////  STATE_LOADS_ENDING  ////////////////
+      STATE_OUTPUT_TABLE[STATE_LB] = 44'd0;
+
+      STATE_OUTPUT_TABLE[STATE_LB][31:30] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_LB][21:20] = 2'd0;
+      STATE_OUTPUT_TABLE[STATE_LB][19:17] = 3'd0;
+      STATE_OUTPUT_TABLE[STATE_LB][34] = 1;
+//      ///////////////  STATE_LB  ////////////////
 
 
 //      ///////////////  STATE_SLLM_0  ////////////////
@@ -1561,40 +1566,32 @@ always @(posedge clk) begin
             
             //STATE_SW
             STATE_SW: begin
-                STATE = STATE_STORES_ENDING;
+                STATE = STATE_FETCH0;
             end
             //STATE_SH
             STATE_SH: begin
-                STATE = STATE_STORES_ENDING;
+                STATE = STATE_FETCH0;
             end
             //STATE_SB
             STATE_SB: begin
-                STATE = STATE_STORES_ENDING;
+                STATE = STATE_FETCH0;
             end
 
             
             //STATE_LW
             STATE_LW: begin
-                STATE = STATE_LOADS_ENDING;
+                STATE = STATE_FETCH0;
             end
             //STATE_LH
             STATE_LH: begin
-                STATE = STATE_LOADS_ENDING;
+                STATE = STATE_FETCH0;
             end
             //STATE_LB
             STATE_LB: begin
-                STATE = STATE_LOADS_ENDING;
+                STATE = STATE_FETCH0;
             end
  
-            
-            //STATE_STORES_ENDING
-            STATE_STORES_ENDING: begin
-                STATE = STATE_FETCH0;
-            end    
-            //STATE_LOADS_ENDING
-            STATE_LOADS_ENDING: begin
-                STATE = STATE_FETCH0;
-            end
+        
             
             //STATE_SLLM_0 
             STATE_SLLM_0: begin
