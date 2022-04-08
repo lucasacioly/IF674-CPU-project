@@ -78,8 +78,8 @@ Essas são as instruções que conseguimos fazer:
 - [x] jr rs
 - [x] break 
 - [x] Rte 
-- [] div rs, rt
-- [] mult rs, rt
+- [x] div rs, rt
+- [x] mult rs, rt
 - [x] mfhi rd
 - [x] mflo rd
 - [x] addm rs, rt, rd
@@ -109,5 +109,5 @@ Essas são as instruções que conseguimos fazer:
 
 ### Exceção
 - [x] Overflow
-- [] div by 0
+- [x] div by 0
 - [x] opcode inexistente

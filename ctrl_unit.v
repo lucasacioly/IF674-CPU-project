@@ -62,7 +62,7 @@ module control_unit(
 
 //-----------------------------------CONTADORES E TABELAS-------------------------------------//
     reg [6:0] STATE;    
-    reg [5:0] COUNTER; // contador de clocks
+    reg [6:0] COUNTER; // contador de clocks
     reg [43:0] STATE_OUTPUT_TABLE [0:68];
     wire [43:0] OUTPUT_WORD; 
 
@@ -245,7 +245,10 @@ module control_unit(
     parameter STATE_EXP_END_0               = 7'd63;
     parameter STATE_EXP_END_1               = 7'd64;
 
-
+    // DIV 
+    parameter STATE_DIV                     = 7'd65;
+    // MULT 
+    parameter STATE_MULT                    = 7'd66;
     //---------------------------FIM ESTADOS--------------------------//
 
 
@@ -1002,6 +1005,28 @@ initial begin
 
 
 
+
+//      ///////////////  STATE_DIV  ////////////////
+//      // Div_Mult_Ctrl = 1       /40:39
+//      // write = 1               /5
+      STATE_OUTPUT_TABLE[STATE_DIV] = 44'd0;
+     
+      STATE_OUTPUT_TABLE[STATE_DIV][40:39] = 2'd1;
+      STATE_OUTPUT_TABLE[STATE_DIV][5] = 1;
+//      ///////////////  STATE_DIV  ////////////////
+
+//      ///////////////  STATE_MULT  ////////////////
+//      // Div_Mult_Ctrl = 2       /40:39
+//      // write = 1               /5
+      STATE_OUTPUT_TABLE[STATE_MULT] = 44'd0;
+
+      STATE_OUTPUT_TABLE[STATE_MULT][40:39] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_MULT][5] = 1;
+//      ///////////////  STATE_MULT  ////////////////
+
+
+
+
 //      ///////////////  STATE_EXP_OVERFLOW  ////////////////
 //      // MEMwrite = 0             /38
 //      // ALUSrcA = 0              /16:15
@@ -1181,6 +1206,12 @@ always @(posedge clk) begin
 
                                 ADDM:
                                     STATE = STATE_ADDM0;
+                                
+                                DIV: 
+                                    STATE = STATE_DIV;
+                                
+                                MULT: 
+                                    STATE = STATE_MULT;
 
                                 default:
                                     STATE = STATE_EXP_OPCODE; // tratamento de exceções de OPCODE INEXISTENTE 
@@ -1630,6 +1661,33 @@ always @(posedge clk) begin
                 STATE = STATE_FETCH0;
             end
 
+
+            // DIV
+            STATE_DIV: begin
+                if (COUNTER < 34) begin
+                    if (DIV0) begin
+                        COUNTER = 0;
+                        STATE = STATE_EXP_DIV0;
+                    end
+
+                    COUNTER = COUNTER + 1;
+                end
+                else begin
+                    COUNTER = 0;
+                    STATE = STATE_FETCH0;
+                end
+            end
+
+            // MULT
+            STATE_MULT: begin
+                if (COUNTER < 34) begin
+                    COUNTER = COUNTER + 1;
+                end
+                else begin
+                    COUNTER = 0;
+                    STATE = STATE_FETCH0;
+                end
+            end
 
             //-------------- TRATAMENTO DE EXCEÇÕES ------------------//
             
