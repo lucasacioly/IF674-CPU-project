@@ -11,13 +11,13 @@ module StoreMask(
         OUT = B;
       2'b01:
         begin
-          OUT[31:16] = B[15:0];
-          OUT[15:0] = MR[15:0];
+          OUT[31:16] = MR[31:16];
+          OUT[15:0] = B[15:0];
         end
       2'b10:
         begin
-          OUT[31:24] = B[7:0];
-          OUT[23:0] = MR[23:0];
+          OUT[31:8] = MR[31:8];
+          OUT[7:0] = B[7:0];
         end
       default: 
         OUT = B;
