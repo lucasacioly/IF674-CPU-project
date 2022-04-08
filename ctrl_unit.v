@@ -870,22 +870,22 @@ initial begin
 //      // ShiftRegCtrl = 1     /24
 //      // ShiftAmmCtrl = 1      /23:22
 //      // shift = 1            /37:35
-      STATE_OUTPUT_TABLE[STATE_SLLV] = 44'd0;
+      STATE_OUTPUT_TABLE[STATE_SLLM_0] = 44'd0;
 
-      STATE_OUTPUT_TABLE[STATE_SLLV][24] = 1;
-      STATE_OUTPUT_TABLE[STATE_SLLV][23:22] = 2'd1;
-      STATE_OUTPUT_TABLE[STATE_SLLV][37:35] = 3'd1;
+      STATE_OUTPUT_TABLE[STATE_SLLM_0][24] = 1;
+      STATE_OUTPUT_TABLE[STATE_SLLM_0][23:22] = 2'd1;
+      STATE_OUTPUT_TABLE[STATE_SLLM_0][37:35] = 3'd1;
 //      ///////////////  STATE_SLLM_0  ////////////////
 
 //      ///////////////  STATE_SLLM_1  ////////////////
 //      // ShiftRegCtrl = 1     /24
 //      // ShiftAmmCtrl = 1      /23:22
 //      // shift = 2            /37:35
-      STATE_OUTPUT_TABLE[STATE_SLLV] = 44'd0;
+      STATE_OUTPUT_TABLE[STATE_SLLM_1] = 44'd0;
 
-      STATE_OUTPUT_TABLE[STATE_SLLV][24] = 1;
-      STATE_OUTPUT_TABLE[STATE_SLLV][23:22] = 2'd1;
-      STATE_OUTPUT_TABLE[STATE_SLLV][37:35] = 3'd2;
+      STATE_OUTPUT_TABLE[STATE_SLLM_1][24] = 1;
+      STATE_OUTPUT_TABLE[STATE_SLLM_1][23:22] = 2'd1;
+      STATE_OUTPUT_TABLE[STATE_SLLM_1][37:35] = 3'd2;
 //      ///////////////  STATE_SLLM_1  ////////////////
 
 //      ///////////////  STATE_SLLM_ENDING  ////////////////
