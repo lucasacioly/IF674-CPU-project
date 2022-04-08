@@ -11,12 +11,12 @@ module LoadMask(
           2'b01:
             begin
                 OUT[31:16] = 16'b0;
-                OUT[15:0] = MR[31:16];
+                OUT[15:0] = MR[15:0];
             end
           2'b10:
             begin
                 OUT[31:8] = 24'b0;
-                OUT[7:0] = MR[31:24];
+                OUT[7:0] = MR[7:0];
             end
           default: 
             OUT = MR;
