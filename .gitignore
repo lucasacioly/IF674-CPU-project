@@ -3,7 +3,7 @@
 !*.*
 commit.txt
 *.vcd
-work/*
+*/work/*
 *.mpf
 *.mti
 *.wlf
