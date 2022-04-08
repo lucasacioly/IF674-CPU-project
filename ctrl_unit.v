@@ -1035,42 +1035,52 @@ initial begin
 //      ///////////////  STATE_EXP_OVERFLOW  ////////////////
 //      // MEMwrite = 0             /38
 //      // ALUSrcA = 0              /16:15
+//      // ALUSrcB = 1              /14:12
 //      // EXCPControl = 1          /29:28
 //      // IorD = 5                 /27:25
-//      // ALUop = 0                /43:41 
+//      // ALUop = 2                /43:41 
 //      // EPCcontrol = 1           /2
-        STATE_OUTPUT_TABLE[STATE_EXP_OVERFLOW] = 44'd0;        
+        STATE_OUTPUT_TABLE[STATE_EXP_OVERFLOW] = 44'd0;
+                
 
+        STATE_OUTPUT_TABLE[STATE_EXP_OVERFLOW][14:12] = 3'd1;
         STATE_OUTPUT_TABLE[STATE_EXP_OVERFLOW][29:28] = 2'd1;
         STATE_OUTPUT_TABLE[STATE_EXP_OVERFLOW][27:25] = 3'd5;
+        STATE_OUTPUT_TABLE[STATE_EXP_OVERFLOW][43:41] = 3'd2;
         STATE_OUTPUT_TABLE[STATE_EXP_OVERFLOW][2] = 1;
 //      ///////////////  STATE_EXP_OVERFLOW  //////////////// 
 
 //      ///////////////  STATE_EXP_DIV0  //////////////// 
 //      // MEMwrite = 0             /38
 //      // ALUSrcA = 0              /16:15
+//      // ALUSrcB = 1              /14:12
 //      // EXCPControl = 2          /29:28
 //      // IorD = 5                 /27:25
-//      // ALUop = 0                /43:41 
+//      // ALUop = 2                /43:41 
 //      // EPCcontrol = 1           /2
         STATE_OUTPUT_TABLE[STATE_EXP_DIV0] = 44'd0;        
 
+        STATE_OUTPUT_TABLE[STATE_EXP_DIV0][14:12] = 3'd1;
         STATE_OUTPUT_TABLE[STATE_EXP_DIV0][29:28] = 2'd2;
         STATE_OUTPUT_TABLE[STATE_EXP_DIV0][27:25] = 3'd5;
+        STATE_OUTPUT_TABLE[STATE_EXP_DIV0][43:41] = 3'd2;
         STATE_OUTPUT_TABLE[STATE_EXP_DIV0][2] = 1;
 //      ///////////////  STATE_EXP_DIV0  ////////////////
 
 //      ///////////////  STATE_EXP_OPCODE  //////////////// 
 //      // MEMwrite = 0             /38
 //      // ALUSrcA = 0              /16:15
+//      // ALUSrcB = 1              /14:12
 //      // EXCPControl = 0          /29:28
 //      // IorD = 5                 /27:25
-//      // ALUop = 0                /43:41 
+//      // ALUop = 2                /43:41 
 //      // EPCcontrol = 1           /2
         STATE_OUTPUT_TABLE[STATE_EXP_OPCODE] = 44'd0;        
 
+        STATE_OUTPUT_TABLE[STATE_EXP_OPCODE][14:12] = 3'd1;
         STATE_OUTPUT_TABLE[STATE_EXP_OPCODE][29:28] = 2'd0;
         STATE_OUTPUT_TABLE[STATE_EXP_OPCODE][27:25] = 3'd5;
+        STATE_OUTPUT_TABLE[STATE_EXP_OPCODE][43:41] = 3'd2;
         STATE_OUTPUT_TABLE[STATE_EXP_OPCODE][2] = 1;
 //      ///////////////  STATE_EXP_OPCODE  ////////////////
 
@@ -1082,14 +1092,14 @@ initial begin
 //      ///////////////  STATE_EXP_END_0  ////////////////
 
 //      ///////////////  STATE_EXP_END_1  //////////////// 
-//      // LMcontrol = 3       /31:30
+//      // LMcontrol = 2       /31:30
 //      // PCSrc = 1           /11:9
 //      // PCwrite = 1         /8
       STATE_OUTPUT_TABLE[STATE_EXP_END_1] = 44'd0;
 
-      STATE_OUTPUT_TABLE[STATE_EXP_END_1][31:30] = 2'd3;
-      STATE_OUTPUT_TABLE[STATE_JUMP][11:9] = 3'd1;
-      STATE_OUTPUT_TABLE[STATE_JUMP][8] = 1;
+      STATE_OUTPUT_TABLE[STATE_EXP_END_1][31:30] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_EXP_END_1][11:9] = 3'd1;
+      STATE_OUTPUT_TABLE[STATE_EXP_END_1][8] = 1;
 //      ///////////////  STATE_EXP_END_1  ////////////////
 
 //     //------------------  FIM DA INICIALIZAÇÃO DA TABELA DE OUTPUTS  ------------------//
