@@ -171,7 +171,7 @@ wire EG;        // Equal to
 wire N;          // negative
 
 // DIV e MULT
-wire Div_Mult_Ctrl;
+wire [1:0] Div_Mult_Ctrl;
 wire DIV0;
 
 
@@ -192,6 +192,18 @@ Ula32 ULA(
 );
 
 // DIV e MULT
+div_mult div_mult(
+    .clk(clk),
+    .reset(reset),
+    .controle(Div_Mult_Ctrl),
+
+    .A(A_out), 
+    .B(B_out), 
+
+    .HI(div_mult_hi), 
+    .LO(div_mult_lo),
+    .div0(DIV0)
+);
 
 // IR 
 Instr_reg IR(

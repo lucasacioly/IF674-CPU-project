@@ -66,9 +66,9 @@ module control_unit(
     reg [42:0] STATE_OUTPUT_TABLE [0:68];
     wire [42:0] OUTPUT_WORD; 
 
-
+    
     assign ALUop = OUTPUT_WORD[42:40];
-    assign Div_Mult_Ctrl = OUTPUT_WORD[39];
+    assign Div_Mult_Ctrl = OUTPUT_WORD[39];   /// ER PRA SER 2 bits!!!!
     assign MEMwrite = OUTPUT_WORD[38];
     assign Shift = OUTPUT_WORD[37:35];
     assign RegWrite = OUTPUT_WORD[34];
@@ -586,9 +586,11 @@ initial begin
 
 //      ///////////////  STATE_JR_BREAK_BRANCH_ENDING  ////////////////
 //      // PCwrite = 1      /8
+//      // PCSrc = 2        /11:9
       STATE_OUTPUT_TABLE[STATE_JR_BREAK_BRANCH_ENDING] = 43'd0;
 
       STATE_OUTPUT_TABLE[STATE_JR_BREAK_BRANCH_ENDING][8] = 1;
+      STATE_OUTPUT_TABLE[STATE_JR_BREAK_BRANCH_ENDING][11:9] = 3'd2;
 //      ///////////////  STATE_JR_BREAK_BRANCH_ENDING  ////////////////
 
 
@@ -1323,7 +1325,7 @@ always @(posedge clk) begin
             
             // BREAK
             STATE_BREAK: begin
-                if (COUNTER == 0)
+                if (COUNTER == 0) begin
                     COUNTER = COUNTER + 1;
                 end else begin
                     STATE = STATE_JR_BREAK_BRANCH_ENDING;
