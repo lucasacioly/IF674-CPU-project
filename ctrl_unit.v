@@ -980,7 +980,7 @@ initial begin
 
 //      ///////////////  STATE_JAL_1  ////////////////
 //      // ALUSrcA = 0      /16:15
-//      // PCSrc = 2        /11:9      
+//      // PCSrc = 0        /11:9      
 //      // ALUop =  0       /43:41   
 //      // ALUoutCtrl = 1   /1 
 //      // RegDst = 2       /21:20   
@@ -989,7 +989,7 @@ initial begin
       STATE_OUTPUT_TABLE[STATE_JAL_1] = 44'd0;
       
       STATE_OUTPUT_TABLE[STATE_JAL_1][16:15] = 2'd0;
-      STATE_OUTPUT_TABLE[STATE_JAL_1][11:9] = 3'd2;
+      STATE_OUTPUT_TABLE[STATE_JAL_1][11:9] = 3'd0;
       STATE_OUTPUT_TABLE[STATE_JAL_1][43:41] = 3'd0;
       STATE_OUTPUT_TABLE[STATE_JAL_1][1]     = 1;
       STATE_OUTPUT_TABLE[STATE_JAL_1][21:20] = 2'd2;
@@ -1003,8 +1003,8 @@ initial begin
 //      // RegWrite = 1     /34
       STATE_OUTPUT_TABLE[STATE_JAL_2] = 44'd0;
       
-      STATE_OUTPUT_TABLE[STATE_JAL_1][21:20] = 2'd2;
-      STATE_OUTPUT_TABLE[STATE_JAL_1][19:17] = 3'd6;
+      STATE_OUTPUT_TABLE[STATE_JAL_2][21:20] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_JAL_2][19:17] = 3'd6;
       STATE_OUTPUT_TABLE[STATE_JAL_2][34] = 1;
 //      ///////////////  STATE_JAL_2  ////////////////
 
