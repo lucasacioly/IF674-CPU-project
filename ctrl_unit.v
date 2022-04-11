@@ -1331,7 +1331,7 @@ always @(posedge clk) begin
             
             // ADDIU, ADDI
             STATE_ADDI_ADDIU_0: begin
-                if (OPCODE == ADDIU && O == 1) begin
+                if (OPCODE == ADDI && O == 1) begin
                     STATE = STATE_EXP_OVERFLOW;
                 end else begin
                     STATE = STATE_ADDI_ADDIU_1; // ESTE ESTADO CONTARÁ COM UMA CHECAGEM DE OVERFLOW APENAS SE A INSTRUÇÃO EM QUESTÃO FOR O ADDI, MAS PRIMEIRO SERÁ IMPLEMENTADO O ADDIU
