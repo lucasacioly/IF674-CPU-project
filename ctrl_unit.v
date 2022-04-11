@@ -699,11 +699,17 @@ initial begin
 //      // RegDst = 1       /21:20   
 //      // MemToReg = 7     /19:17
 //      // RegWrite = 1     /34
+//      // ALUSrcA = 2      /16:15
+//      // ALUSrcB = 0      /14:12
+//      // ALUop =  7       /43:41
       STATE_OUTPUT_TABLE[STATE_SLT_1] = 44'd0;
        
       STATE_OUTPUT_TABLE[STATE_SLT_1][21:20] = 2'd1;
       STATE_OUTPUT_TABLE[STATE_SLT_1][19:17] = 3'd7;
       STATE_OUTPUT_TABLE[STATE_SLT_1][34] = 1;
+      STATE_OUTPUT_TABLE[STATE_SLT_1][16:15] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_SLT_1][14:12] = 3'd0;
+      STATE_OUTPUT_TABLE[STATE_SLT_1][43:41] = 3'd7;
 //      ///////////////  STATE_SLT_1  ////////////////
 
 
@@ -722,11 +728,17 @@ initial begin
 //      // RegDst = 0       /21:20   
 //      // MemToReg = 7     /19:17
 //      // RegWrite = 1     /34
+//      // ALUSrcA = 2      /16:15
+//      // ALUSrcB = 3      /14:12
+//      // ALUop =  7       /43:41
       STATE_OUTPUT_TABLE[STATE_SLTI_1] = 44'd0;
        
       STATE_OUTPUT_TABLE[STATE_SLTI_1][21:20] = 2'd0;
       STATE_OUTPUT_TABLE[STATE_SLTI_1][19:17] = 3'd7;
       STATE_OUTPUT_TABLE[STATE_SLTI_1][34] = 1;
+      STATE_OUTPUT_TABLE[STATE_SLTI_1][16:15] = 2'd2;
+      STATE_OUTPUT_TABLE[STATE_SLTI_1][14:12] = 3'd3;
+      STATE_OUTPUT_TABLE[STATE_SLTI_1][43:41] = 3'd7;
 //      ///////////////  STATE_SLTI_1  ////////////////
 
 
