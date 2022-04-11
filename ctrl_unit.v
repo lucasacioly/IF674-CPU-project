@@ -164,7 +164,7 @@ module control_unit(
     parameter STATE_SLL                     = 7'd23; 
     
     // SRA
-    parameter STATE_SRA                     = 7'd24;
+    parameter STATE_SRA                     = 7'd67;
     
     // SRL
     parameter STATE_SRL                     = 7'd24;
